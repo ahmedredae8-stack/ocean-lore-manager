@@ -179,7 +179,7 @@ function BackgroundUploads() {
     setMsg(isVideo ? "جاري رفع الفيديو…" : "جاري رفع الخلفية…");
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) { setMsg("سجل دخولك أولاً"); return; }
-    const path = `${auth.user.id}/bg-${crypto.randomUUID()}.${file.type.split("/")[1].replace("jpeg", "jpg")}`;
+    const path = `${auth.user.id}/bg-${crypto.randomUUID()}.${(file.type.split("/")[1] ?? "png").replace("jpeg", "jpg")}`;
     const { error } = await supabase.storage.from("game-artwork").upload(path, file, { contentType: file.type });
     if (error) { setMsg("تعذّر الرفع — صلاحية المشرف مطلوبة"); return; }
     const { error: rowErr } = await supabase.from("artwork_poses").insert({ category: "background", subject: file.name.slice(0, 60), pose: "day", image_path: path, created_by: auth.user.id });

@@ -198,7 +198,7 @@ function Index() {
       {questsOpen && (
         <div className="daily-overlay" role="dialog" aria-label="المهام اليومية">
           <div className="w-full max-w-md">
-            <QuestBoard />
+            <QuestBoard onClose={() => setQuestsOpen(false)} />
             <button
               type="button"
               onClick={() => {

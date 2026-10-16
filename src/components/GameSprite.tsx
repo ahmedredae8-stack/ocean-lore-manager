@@ -1,3 +1,4 @@
+import { CAPTAINS } from "@/lib/art";
 import armorAtlas from "@/assets/armor-atlas.png.asset.json";
 import captainsAtlas from "@/assets/captains-atlas.png.asset.json";
 import crewAtlas from "@/assets/crew-atlas.png.asset.json";
@@ -31,8 +32,9 @@ export function GameSprite({ atlas, index, className = "" }: { atlas: Atlas; ind
   );
 }
 
-export function CaptainAvatar({ seed = 0, className = "" }: { seed?: number; className?: string }) {
-  return <GameSprite atlas="captain" index={Math.abs(seed) % 6} className={`captain-sprite ${className}`} />;
+export function CaptainAvatar({ seed = 0, url, className = "" }: { seed?: number; url?: string | null; className?: string }) {
+  const src = url || CAPTAINS[Math.abs(seed) % CAPTAINS.length];
+  return <img src={src} alt="" draggable={false} className={`captain-sprite captain-photo ${className}`} />;
 }
 
 export function nameSeed(name: string) {

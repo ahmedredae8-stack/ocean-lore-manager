@@ -197,7 +197,7 @@ export function TribesPage() {
                   <ul className="tribe-members">
                     {members.map((m) => (
                       <li key={m.id}>
-                        <CaptainAvatar seed={m.players?.avatar_index ?? 0} className="tribe-member-face" />
+                        <CaptainAvatar seed={m.players?.avatar_index ?? 0} url={(m.players as { avatar_url?: string | null } | null)?.avatar_url} className="tribe-member-face" />
                         <div>
                           <strong>{m.players?.name ?? "قبطان"}</strong>
                           <small>

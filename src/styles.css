@@ -2771,3 +2771,7 @@
 .tribe-create, .tribe-leave, .tribe-board button, .tribe-members button { border-radius: 99px; color: var(--tos-aqua); border-color: color-mix(in oklab, var(--tos-aqua) 55%, transparent); background: color-mix(in oklab, var(--tos-aqua) 10%, transparent); }
 .tribe-emblems { display: flex; flex-wrap: wrap; gap: .4rem; }
 @media (prefers-reduced-motion: reduce) { .tos-intro-art, .tos-intro-rays, .daily-cell-now, .tos-intro-steps li.now { animation: none; } }
+
+/* Painted portraits */
+.captain-photo { width:100%; height:100%; object-fit:cover; border-radius:inherit; display:block; }
+.crew-photo { width:100%; height:100%; object-fit:cover; border-radius:12px; }

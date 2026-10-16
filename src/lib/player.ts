@@ -7,6 +7,7 @@ export type Player = {
   last_seen: string;
   created_at: string;
   avatar_index?: number;
+  avatar_url?: string | null;
   score?: number;
 };
 
@@ -91,4 +92,8 @@ export async function saveThemeToAccount(id: string, themeId: string) {
 /** Persist the captain's chosen default portrait. */
 export async function saveAvatarToAccount(id: string, avatarIndex: number) {
   await supabase.from("players").update({ avatar_index: avatarIndex }).eq("id", id);
+}
+
+export async function saveAvatarUrl(id: string, url: string | null) {
+  await supabase.from("players").update({ avatar_url: url } as never).eq("id", id);
 }

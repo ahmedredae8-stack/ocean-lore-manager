@@ -9,6 +9,7 @@ import fishImg from "@/assets/dock2/fish.png";
 type Props = {
   name: string;
   avatar?: number;
+  avatarUrl?: string | null;
   title?: string;
   level?: number;
   progress?: number;
@@ -26,6 +27,7 @@ type Props = {
 export function TopHud({
   name,
   avatar,
+  avatarUrl,
   level = 12,
   progress = 0.62,
   coins = 125680,
@@ -54,7 +56,7 @@ export function TopHud({
           <circle cx="18" cy="18" r="16" className="tos-ring-bg" />
           <circle cx="18" cy="18" r="16" className="tos-ring-fg" strokeDasharray={`${progress * 100.5} 100.5`} />
         </svg>
-        <CaptainAvatar seed={seed} className="tos-medal-art" />
+        <CaptainAvatar seed={seed} url={avatarUrl} className="tos-medal-art" />
         <span className="tos-medal-lvl">{level}</span>
       </button>
 

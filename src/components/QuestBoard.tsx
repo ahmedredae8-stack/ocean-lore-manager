@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Check, Gift } from "lucide-react";
+import { Check, X } from "lucide-react";
 
 import { QUESTS, claim, isDone, loadQuests, type QuestState } from "@/lib/quests";
 import { playSfx } from "@/lib/sound";
+import rubyIcon from "@/assets/dock2/ruby.png";
 
-/** Daily quest board — shared by the fish market and the shipyard. */
-export function QuestBoard() {
+/** Daily quests in the same royal treasury frame as the daily reward. */
+export function QuestBoard({ onClose }: { onClose?: () => void }) {
   const [state, setState] = useState<QuestState | null>(null);
 
   useEffect(() => {
@@ -16,50 +17,45 @@ export function QuestBoard() {
   }, []);
 
   if (!state) return null;
+  const doneCount = QUESTS.filter((q) => state.claimed.includes(q.id)).length;
 
   return (
-    <section className="quest-board">
-      <header className="quest-head">
-        <img src="/__l5e/assets-v1/6f7ab924-7440-4f50-8526-1d8b5cc7d59c/quest.png" alt="" className="h-7 w-7 object-contain" />
-        <h2>المهام اليومية</h2>
-        <span className="quest-gems">
-          <img src="/__l5e/assets-v1/a7998f4c-5c5e-48cc-8287-befdc38e3ba7/gem.png" alt="" className="h-4 w-4" />
-          {state.gems}
-        </span>
+    <div className="daily-panel quest-panel" dir="rtl">
+      {onClose && <button type="button" aria-label="إغلاق" onClick={() => { playSfx("click", 0.6); onClose(); }} className="tos-x"><X className="h-4 w-4" /></button>}
+      <header className="daily-head">
+        <span className="daily-kicker">أوامر الأميرال اليومية</span>
+        <h2 className="daily-title">لوح المهام</h2>
+        <div className="daily-streak"><b>{doneCount}</b><span>/ {QUESTS.length} مهام مستلمة</span></div>
       </header>
-
-      <ul className="grid gap-2">
+      <ul className="quest2-list">
         {QUESTS.map((q) => {
           const done = isDone(state, q);
           const taken = state.claimed.includes(q.id);
-          const pct = Math.min(100, Math.round(((state.progress[q.id] ?? 0) / q.goal) * 100));
+          const have = Math.min(q.goal, state.progress[q.id] ?? 0);
+          const pct = Math.round((have / q.goal) * 100);
           return (
-            <li key={q.id} className={`quest-row ${done ? "quest-row-done" : ""}`}>
-              <img src={q.icon} alt="" className="h-10 w-10 shrink-0 object-contain drop-shadow" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-black">{q.title}</p>
-                <p className="truncate text-[11px] text-white/50">{q.hint}</p>
-                <div className="quest-bar">
-                  <span style={{ width: `${pct}%` }} />
-                </div>
+            <li key={q.id} className={`quest2 ${done && !taken ? "quest2-ready" : ""} ${taken ? "quest2-taken" : ""}`}>
+              <span className="quest2-icon"><img src={q.icon} alt="" /></span>
+              <div className="quest2-copy">
+                <b>{q.title}</b>
+                <small>{q.hint}</small>
+                <div className="quest2-bar"><span style={{ width: `${pct}%` }} /></div>
+                <em>{have} / {q.goal}</em>
               </div>
               <button
                 type="button"
                 disabled={!done || taken}
-                onPointerEnter={() => playSfx("hover", 0.2)}
-                onClick={() => {
-                  playSfx("click", 0.8);
-                  setState((s) => (s ? claim(s, q.id) : s));
-                }}
-                className="quest-claim"
+                className="quest2-claim"
+                onClick={() => { playSfx("click", 0.8); setState((s) => (s ? claim(s, q.id) : s)); }}
               >
-                {taken ? <Check className="h-4 w-4" /> : <Gift className="h-4 w-4" />}
-                <span className="tabular-nums">{q.gems}</span>
+                {taken ? <Check className="h-4 w-4" /> : <img src={rubyIcon} alt="" />}
+                <span>{taken ? "تم" : q.gems}</span>
               </button>
             </li>
           );
         })}
       </ul>
-    </section>
+      <p className="gate-note">رصيد مكافآت المهام: {state.gems}</p>
+    </div>
   );
 }

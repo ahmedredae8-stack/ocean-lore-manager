@@ -2,11 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
 
 import { fleetCatalog, hulls, type ShipPose } from "@/lib/fleetCatalog";
-import actSail from "@/assets/actions/act-sail.png.asset.json";
-import actCrew from "@/assets/actions/act-crew.png.asset.json";
-import actSell from "@/assets/actions/act-sell.png.asset.json";
+import { ACTION_ART } from "@/lib/art";
 import { GameSprite } from "@/components/GameSprite";
-import { ShipNet } from "@/components/ShipNet";
 
 import { FleetCalibrator } from "@/components/FleetCalibrator";
 import { Button } from "@/components/ui/button";
@@ -155,15 +152,15 @@ export function FishingFleet({ themeId, themeName }: { themeId: string; themeNam
             {selected === ship.id && !busy && (
               <div className="ship-actions" role="menu" aria-label={`أوامر السفينة ${ship.id}`}>
                 <Button variant="ghost" role="menuitem" className="ship-action" onClick={() => sail(ship)} title={ship.state === "docked" ? "الذهاب للصيد" : "العودة للميناء"}>
-                  <img src={actSail.url} alt="" />
+                  <img src={ACTION_ART.sail} alt="" />
                   <span>{ship.state === "docked" ? "صيد" : "رجوع"}</span>
                 </Button>
                 <Button variant="ghost" role="menuitem" className="ship-action" onClick={() => { setSelected(null); setCrewFor(ship.id); playSfx("click", 0.65); }} title="تفقد الطاقم">
-                  <img src={actCrew.url} alt="" />
+                  <img src={ACTION_ART.crew} alt="" />
                   <span>الطاقم</span>
                 </Button>
                 <Button variant="ghost" role="menuitem" className="ship-action" onClick={() => { setSelected(null); setSellFor(ship.id); playSfx("click", 0.65); }} title="بيع السفينة">
-                  <img src={actSell.url} alt="" />
+                  <img src={ACTION_ART.sell} alt="" />
                   <span>بيع</span>
                 </Button>
               </div>
@@ -186,7 +183,6 @@ export function FishingFleet({ themeId, themeName }: { themeId: string; themeNam
                     height={640}
                     draggable={false}
                   />
-                  {!artwork[`ship-${catalogId}:${frame}`] && <ShipNet pose={frame} spray={spray} />}
 
                 </span>
               </span>

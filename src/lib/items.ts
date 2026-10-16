@@ -1,3 +1,4 @@
+import { ACTION_ART } from "@/lib/art";
 /** Weapons (raids / bombing) and hireable crews catalog. */
 
 export type Currency = "coin" | "gem";
@@ -32,9 +33,9 @@ export const WEAPONS: Weapon[] = [
 ];
 
 export const CREWS: Crew[] = [
-  { id: "sailor", name: "بحار", desc: "+10% سرعة الإبحار", hours: 5, price: 1_500, currency: "coin", icon: "/__l5e/assets-v1/d5df5bb9-5e5a-45d0-b366-a09e0864c775/act-crew.png" },
-  { id: "luck", name: "حظ", desc: "+15% فرصة صيد نادر", hours: 5, price: 4_000, currency: "coin", icon: "/__l5e/assets-v1/d5df5bb9-5e5a-45d0-b366-a09e0864c775/act-crew.png" },
-  { id: "guide", name: "مرشد", desc: "يكشف أفضل مناطق الصيد", hours: 8, price: 9_000, currency: "coin", icon: "/__l5e/assets-v1/d5df5bb9-5e5a-45d0-b366-a09e0864c775/act-crew.png" },
+  { id: "sailor", name: "بحار", desc: "+10% سرعة الإبحار", hours: 5, price: 1_500, currency: "coin", icon: ACTION_ART.crew },
+  { id: "luck", name: "حظ", desc: "+15% فرصة صيد نادر", hours: 5, price: 4_000, currency: "coin", icon: ACTION_ART.crew },
+  { id: "guide", name: "مرشد", desc: "يكشف أفضل مناطق الصيد", hours: 8, price: 9_000, currency: "coin", icon: ACTION_ART.crew },
   { id: "thief", name: "لص", desc: "يسرق جزءًا من شحنة الخصم", hours: 4, price: 18_000, currency: "coin", icon: "/__l5e/assets-v1/402ed8cd-d4cd-4291-a942-cdb84abbe4c1/skull.png" },
   { id: "guard", name: "حارس", desc: "يحمي سفنك من الصواريخ", hours: 12, price: 60, currency: "gem", icon: "/__l5e/assets-v1/8d101928-f345-4cca-93ad-bbe297da60dc/cat-crew.png" },
   { id: "fix-s", name: "مصلح صغير", desc: "إصلاح 25% من الضرر", hours: 2, price: 2_000, currency: "coin", icon: "/__l5e/assets-v1/1392e852-5aa0-4d33-9df4-d653bb9d02db/act-dock.png" },

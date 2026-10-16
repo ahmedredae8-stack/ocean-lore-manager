@@ -1,3 +1,4 @@
+import { FISH_ART } from "@/lib/art";
 import { ships, type Ship } from "@/lib/ships";
 
 /**
@@ -24,12 +25,12 @@ export type Asset = {
 };
 
 export const FISH_ASSETS: Asset[] = [
-  { id: "sardine", kind: "fish", name: "سردين", img: "/__l5e/assets-v1/4d947f02-ecc3-4613-b7b5-3e113acc3a97/fish-sardine.png", base: 12, supply: 7517, tag: "شائع" },
-  { id: "mackerel", kind: "fish", name: "ماكريل", img: "/__l5e/assets-v1/bbc91b64-b810-402e-874e-e27d05ef99cd/fish-mackerel.png", base: 34, supply: 4210, tag: "شائع" },
-  { id: "tuna", kind: "fish", name: "تونة", img: "/__l5e/assets-v1/2456c8d2-aeaa-4fe7-9ae2-265f9bf4bb89/fish-tuna.png", base: 92, supply: 1860, tag: "نادر" },
-  { id: "swordfish", kind: "fish", name: "سمك السيف", img: "/__l5e/assets-v1/3d1d5bea-96d4-4dc3-a7ef-d15a009a9c5b/fish-swordfish.png", base: 175, supply: 640, tag: "ملحمي" },
-  { id: "turtle", kind: "fish", name: "سلحفاة", img: "/__l5e/assets-v1/dac2cc2e-4dae-44f5-a16a-3086c0d6e83e/fish-turtle.png", base: 214, supply: 310, tag: "ملحمي" },
-  { id: "pearl", kind: "fish", name: "محار اللؤلؤ", img: "/__l5e/assets-v1/ddafcd10-03a7-4e1c-baa8-6921ef5721b0/fish-pearl.png", base: 480, supply: 96, tag: "أسطوري" },
+  { id: "sardine", kind: "fish", name: "سردين", img: FISH_ART.sardine, base: 12, supply: 7517, tag: "شائع" },
+  { id: "mackerel", kind: "fish", name: "ماكريل", img: FISH_ART.mackerel, base: 34, supply: 4210, tag: "شائع" },
+  { id: "tuna", kind: "fish", name: "تونة", img: FISH_ART.tuna, base: 92, supply: 1860, tag: "نادر" },
+  { id: "swordfish", kind: "fish", name: "سمك السيف", img: FISH_ART.swordfish, base: 175, supply: 640, tag: "ملحمي" },
+  { id: "turtle", kind: "fish", name: "سلحفاة", img: FISH_ART.turtle, base: 214, supply: 310, tag: "ملحمي" },
+  { id: "pearl", kind: "fish", name: "محار اللؤلؤ", img: FISH_ART.pearl, base: 480, supply: 96, tag: "أسطوري" },
 ];
 
 export const SHIP_ASSETS: Asset[] = ships.map((s: Ship) => ({

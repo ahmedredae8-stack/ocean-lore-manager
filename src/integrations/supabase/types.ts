@@ -173,6 +173,7 @@ export type Database = {
       players: {
         Row: {
           avatar_index: number
+          avatar_url: string | null
           created_at: string
           id: string
           last_seen: string
@@ -184,6 +185,7 @@ export type Database = {
         }
         Insert: {
           avatar_index?: number
+          avatar_url?: string | null
           created_at?: string
           id?: string
           last_seen?: string
@@ -195,6 +197,7 @@ export type Database = {
         }
         Update: {
           avatar_index?: number
+          avatar_url?: string | null
           created_at?: string
           id?: string
           last_seen?: string

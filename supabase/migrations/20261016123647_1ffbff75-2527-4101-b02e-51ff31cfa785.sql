@@ -1,0 +1,1 @@
+alter table public.players add column if not exists avatar_url text check (avatar_url is null or length(avatar_url) < 200000);

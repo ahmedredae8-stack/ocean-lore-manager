@@ -1,12 +1,13 @@
+import { FISH_ART } from "@/lib/art";
 import { supabase } from "@/integrations/supabase/client";
 
 export const FISH = [
-  { id: "sardine", name: "سردين", img: "/__l5e/assets-v1/6ee1de86-0dbb-4cd1-8a32-2ddae64f880b/fish-sardine.png", price: 12, weight: 50 },
-  { id: "mackerel", name: "ماكريل", img: "/__l5e/assets-v1/22dd8ddd-6a49-44a3-8b5e-b77d478a6553/fish-mackerel.png", price: 34, weight: 25 },
-  { id: "tuna", name: "تونة", img: "/__l5e/assets-v1/bf2ab850-8f33-4604-b538-342fcda67165/fish-tuna.png", price: 92, weight: 12 },
-  { id: "swordfish", name: "سمك السيف", img: "/__l5e/assets-v1/f540ac8e-9aa5-46f1-8c18-68666fb7b8ef/fish-swordfish.png", price: 175, weight: 7 },
-  { id: "turtle", name: "سلحفاة", img: "/__l5e/assets-v1/7ea2ace5-9054-4e26-8cd9-24c253d2b475/fish-turtle.png", price: 214, weight: 4 },
-  { id: "pearl", name: "محار اللؤلؤ", img: "/__l5e/assets-v1/fc1415ea-a430-4c29-8634-b0229fd9bec9/fish-pearl.png", price: 480, weight: 2 },
+  { id: "sardine", name: "سردين", img: FISH_ART.sardine, price: 12, weight: 50 },
+  { id: "mackerel", name: "ماكريل", img: FISH_ART.mackerel, price: 34, weight: 25 },
+  { id: "tuna", name: "تونة", img: FISH_ART.tuna, price: 92, weight: 12 },
+  { id: "swordfish", name: "سمك السيف", img: FISH_ART.swordfish, price: 175, weight: 7 },
+  { id: "turtle", name: "سلحفاة", img: FISH_ART.turtle, price: 214, weight: 4 },
+  { id: "pearl", name: "محار اللؤلؤ", img: FISH_ART.pearl, price: 480, weight: 2 },
 ] as const;
 export type FishId = (typeof FISH)[number]["id"];
 export const CATCHES_UPDATED = "tos:catches";

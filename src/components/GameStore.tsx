@@ -3,6 +3,7 @@ import { Check, Crown, Gem, Minus, Plus, Shield, ShipWheel, Swords, Users, X } f
 
 import { Button } from "@/components/ui/button";
 import { GameSprite } from "@/components/GameSprite";
+import { CREW_ART } from "@/lib/art";
 import { ARMORS, CREWS, GEM_PACKS, WEAPONS } from "@/lib/items";
 import { tripLabel } from "@/lib/fleetCatalog";
 import { useLiveShips } from "@/lib/shipOverrides";
@@ -46,7 +47,7 @@ export function GameStore({ activeId, onSelect, onClose }: { activeId: string; o
   const liveShips = useLiveShips();
   const products = useMemo<Product[]>(() => {
     if (tab === "weapons") return WEAPONS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · قوة تدميرية ${item.power * 1000}`, price: item.price, currency: item.currency, art: art[`${item.id}:idle`] ? <img src={art[`${item.id}:idle`]} alt="" loading="lazy" /> : <GameSprite atlas="weapon" index={index} /> }));
-    if (tab === "crew") return CREWS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · ${item.hours}H`, price: item.price, currency: item.currency, art: <GameSprite atlas="crew" index={index} /> }));
+    if (tab === "crew") return CREWS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · ${item.hours}H`, price: item.price, currency: item.currency, art: <img src={CREW_ART[index % CREW_ART.length]} alt="" loading="lazy" className="crew-photo" /> }));
     if (tab === "armor") return ARMORS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · دفاع ${item.defense * 500}`, price: item.price, currency: item.currency, art: <GameSprite atlas="armor" index={index} /> }));
     if (tab === "ships")
       return liveShips.map((ship) => ({

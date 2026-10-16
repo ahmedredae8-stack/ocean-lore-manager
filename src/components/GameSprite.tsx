@@ -32,7 +32,7 @@ export function GameSprite({ atlas, index, className = "" }: { atlas: Atlas; ind
   );
 }
 
-export function CaptainAvatar({ seed = 0, url, className = "" }: { seed?: number; url?: string | null; className?: string }) {
+export function CaptainAvatar({ seed = 0, url, className = "" }: { seed?: number; url?: string | null | undefined; className?: string }) {
   const src = url || CAPTAINS[Math.abs(seed) % CAPTAINS.length];
   return <img src={src} alt="" draggable={false} className={`captain-sprite captain-photo ${className}`} />;
 }

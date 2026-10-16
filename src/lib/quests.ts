@@ -1,3 +1,4 @@
+import { FISH_ART, ACTION_ART } from "@/lib/art";
 /** Daily quests: local progress, midnight reset, gem rewards. */
 
 export type QuestId = "catch" | "sell" | "crew" | "upgrade";
@@ -13,8 +14,8 @@ export type Quest = {
 
 export const QUESTS: Quest[] = [
   { id: "catch", title: "ارمِ الشباك 5 مرات", hint: "اصطد من سوق السمك أو من رحلة سفينة", goal: 5, gems: 15, icon: "/__l5e/assets-v1/a78892fb-cc92-43da-8c99-113236cf0e7c/net.png" },
-  { id: "sell", title: "بِع 3 دفعات صيد", hint: "بِع صيدك بأفضل سعر في السوق", goal: 3, gems: 20, icon: "/__l5e/assets-v1/2456c8d2-aeaa-4fe7-9ae2-265f9bf4bb89/fish-tuna.png" },
-  { id: "crew", title: "جهّز طاقمًا مرتين", hint: "شغّل بحّارة أو مرشدًا على سفينتك", goal: 2, gems: 25, icon: "/__l5e/assets-v1/d5df5bb9-5e5a-45d0-b366-a09e0864c775/act-crew.png" },
+  { id: "sell", title: "بِع 3 دفعات صيد", hint: "بِع صيدك بأفضل سعر في السوق", goal: 3, gems: 20, icon: FISH_ART.tuna },
+  { id: "crew", title: "جهّز طاقمًا مرتين", hint: "شغّل بحّارة أو مرشدًا على سفينتك", goal: 2, gems: 25, icon: ACTION_ART.crew },
   { id: "upgrade", title: "طوّر سفينة واحدة", hint: "ارفع مستوى أي سفينة في مصنع السفن", goal: 1, gems: 40, icon: "/__l5e/assets-v1/1392e852-5aa0-4d33-9df4-d653bb9d02db/act-dock.png" },
 ];
 

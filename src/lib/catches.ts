@@ -45,3 +45,29 @@ export async function sellFish(fishId: string) {
   if (!error) window.dispatchEvent(new Event(CATCHES_UPDATED));
   return !error;
 }
+
+/** Sells part of one fish stack: removes the rows, then returns the remainder. */
+export async function sellFishQty(fishId: string, qty: number, have: number) {
+  const { data } = await supabase.auth.getUser();
+  if (!data.user || qty <= 0) return false;
+  const { error } = await supabase.from("catches").delete().eq("fish_id", fishId);
+  if (error) return false;
+  const rest = Math.max(0, have - qty);
+  if (rest > 0) await supabase.from("catches").insert({ user_id: data.user.id, fish_id: fishId, qty: rest });
+  window.dispatchEvent(new Event(CATCHES_UPDATED));
+  return true;
+}
+
+/** Deterministic hourly price curve for a fish (12 points, last = now). */
+export function priceCurve(base: number, hours = 12) {
+  const now = new Date();
+  const pts: { label: string; price: number }[] = [];
+  for (let i = hours - 1; i >= 0; i--) {
+    const d = new Date(now.getTime() - i * 3600_000);
+    const h = d.getHours();
+    const seed = Math.sin((d.getDate() * 24 + h) * 12.9898 + base) * 43758.5453;
+    const r = seed - Math.floor(seed);
+    pts.push({ label: `${h % 12 || 12}\n${h < 12 ? "am" : "pm"}`, price: Math.round(base * (0.6 + r * 0.9) * 10) / 10 });
+  }
+  return pts;
+}

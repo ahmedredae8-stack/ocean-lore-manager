@@ -2775,3 +2775,131 @@
 /* Painted portraits */
 .captain-photo { width:100%; height:100%; object-fit:cover; border-radius:inherit; display:block; }
 .crew-photo { width:100%; height:100%; object-fit:cover; border-radius:12px; }
+
+/* ── Captain gate (royal, matches daily treasury) ── */
+.gate-overlay { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 1rem; backdrop-filter: blur(6px); }
+.gate-panel { position: relative; max-height: 92%; overflow-y: auto; border-color: color-mix(in oklab, var(--tos-gold) 60%, transparent); box-shadow: 0 30px 60px color-mix(in oklab, black 60%, transparent), 0 0 40px color-mix(in oklab, var(--tos-gold) 22%, transparent); animation: tosDrop .5s cubic-bezier(.2,1.4,.4,1) both; }
+.gate-sub { font-size: .75rem; color: var(--tos-subtle); text-align: center; }
+.gate-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; padding: .25rem; margin-bottom: .8rem; border-radius: 999px; background: var(--tos-card); border: 1px solid var(--tos-line); }
+.gate-tab { padding: .45rem; border-radius: 999px; font-weight: 800; font-size: .85rem; color: var(--tos-subtle); transition: .2s; }
+.gate-tab.on { color: var(--tos-abyss); background: var(--tos-btn-face); }
+.gate-label { display: block; margin-bottom: .4rem; font-size: .72rem; font-weight: 800; color: var(--tos-aqua); }
+.gate-avatars { margin-bottom: .7rem; }
+.gate-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .45rem; }
+.gate-face { aspect-ratio: 1; overflow: hidden; border-radius: .9rem; border: 2px solid var(--tos-line); background: var(--tos-card); transition: transform .15s, border-color .15s; }
+.gate-face img { width: 100%; height: 100%; object-fit: cover; }
+.gate-face:hover { transform: translateY(-2px); }
+.gate-face.on { border-color: var(--tos-gold); box-shadow: 0 0 16px color-mix(in oklab, var(--tos-gold) 45%, transparent); }
+.gate-upload { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15rem; color: var(--tos-aqua); border-style: dashed; }
+.gate-upload small { font-size: .6rem; }
+.gate-form { display: flex; flex-direction: column; gap: .5rem; }
+.gate-field { display: flex; align-items: center; gap: .5rem; padding: .6rem .8rem; border-radius: .9rem; background: var(--tos-card); border: 1px solid var(--tos-line); color: var(--tos-aqua); }
+.gate-field:focus-within { border-color: var(--tos-gold); }
+.gate-field svg { width: 1rem; height: 1rem; flex: none; }
+.gate-field input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--tos-text); font-size: .9rem; }
+.gate-error { font-size: .75rem; color: var(--destructive); text-align: center; }
+.gate-note { display: flex; align-items: center; justify-content: center; gap: .3rem; margin-top: .7rem; font-size: .68rem; color: var(--tos-subtle); }
+
+/* ── Quest board ── */
+.quest-panel { position: relative; }
+.quest-panel .tos-x { position: absolute; top: .7rem; inset-inline-start: .7rem; }
+.quest2-list { display: flex; flex-direction: column; gap: .45rem; max-height: 60vh; overflow-y: auto; }
+.quest2 { display: grid; grid-template-columns: 3rem 1fr auto; align-items: center; gap: .6rem; padding: .55rem; border-radius: 1rem; background: var(--tos-card); border: 1px solid var(--tos-line); }
+.quest2-icon img { width: 3rem; height: 3rem; object-fit: contain; }
+.quest2-copy { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.quest2-copy b { font-size: .85rem; }
+.quest2-copy small { font-size: .66rem; color: var(--tos-subtle); }
+.quest2-copy em { font-style: normal; font-size: .65rem; color: var(--tos-aqua); }
+.quest2-bar { height: .4rem; border-radius: 999px; overflow: hidden; background: color-mix(in oklab, var(--tos-abyss) 80%, transparent); }
+.quest2-bar span { display: block; height: 100%; background: var(--tos-btn-face); }
+.quest2-claim { display: flex; align-items: center; gap: .25rem; padding: .4rem .6rem; border-radius: .7rem; font-weight: 800; font-size: .8rem; color: var(--tos-abyss); background: var(--tos-btn-face); }
+.quest2-claim img { width: 1.1rem; height: 1.1rem; }
+.quest2-claim:disabled { opacity: .45; filter: grayscale(.6); }
+.quest2-ready { border-color: var(--tos-gold); animation: tosPulse 1s ease-in-out infinite alternate; }
+.quest2-taken { opacity: .55; }
+
+/* ── Fish market sale window ── */
+.fm { display: flex; flex-direction: column; align-items: center; gap: .6rem; color: var(--tos-text); }
+.fm-scene { position: relative; width: 100%; aspect-ratio: 16/10; overflow: hidden; border-radius: 1.1rem; border: 1.5px solid color-mix(in oklab, var(--tos-gold) 55%, transparent); }
+.fm-scene-bg { width: 100%; height: 100%; object-fit: cover; }
+.fm-porthole { position: absolute; top: .8rem; left: 50%; translate: -50% 0; width: 5.5rem; height: 5.5rem; padding: .5rem; border-radius: 50%; background: radial-gradient(circle, var(--tos-aqua), color-mix(in oklab, var(--tos-aqua) 50%, var(--tos-abyss))); border: 5px solid var(--tos-gold); box-shadow: 0 6px 18px color-mix(in oklab, black 60%, transparent); }
+.fm-porthole img { width: 100%; height: 100%; object-fit: contain; }
+.fm-name { position: absolute; top: 7rem; left: 50%; translate: -50% 0; padding: .2rem 1rem; border-radius: .4rem; font-weight: 800; background: color-mix(in oklab, var(--tos-abyss) 80%, transparent); }
+.fm-picker { display: flex; gap: .35rem; overflow-x: auto; width: 100%; justify-content: center; }
+.fm-pick { position: relative; width: 3rem; height: 3rem; flex: none; padding: .25rem; border-radius: 50%; background: var(--tos-card); border: 2px solid var(--tos-line); }
+.fm-pick.on { border-color: var(--tos-gold); }
+.fm-pick img { width: 100%; height: 100%; object-fit: contain; }
+.fm-pick small { position: absolute; bottom: -.3rem; inset-inline: 0; font-size: .55rem; font-weight: 800; color: var(--tos-gold); }
+.fm-quality { display: flex; align-items: center; justify-content: center; gap: .4rem; width: 100%; padding: .4rem; border-radius: .6rem; font-weight: 900; color: var(--tos-abyss); background: var(--tos-lime); }
+.fm-chart { width: 100%; padding: .6rem; border-radius: 1rem; background: var(--tos-card); border: 1px solid color-mix(in oklab, var(--tos-gold) 35%, transparent); }
+.fm-chart svg { width: 100%; height: auto; }
+.fm-grid { stroke: var(--tos-line); stroke-width: .5; }
+.fm-axis { fill: var(--tos-subtle); font-size: 8px; font-weight: 700; }
+.fm-line { fill: none; stroke: var(--tos-gold); stroke-width: 2.5; stroke-linejoin: round; }
+.fm-dot { fill: var(--tos-lime); }
+.fm-now { font-weight: 800; }
+.fm-now b { color: var(--tos-gold); }
+.fm-qty { display: flex; flex-direction: column; align-items: center; gap: .25rem; width: 80%; font-weight: 800; }
+.fm-qty input { width: 100%; accent-color: var(--tos-gold); }
+.fm-gain { display: flex; align-items: center; gap: .3rem; color: var(--tos-lime); }
+.fm-gain img { width: 1.2rem; height: 1.2rem; }
+.fm-wallet { font-size: .65rem; color: var(--tos-subtle); }
+.fm-sell { width: 10rem; padding: .7rem; border-radius: 1rem; font-family: var(--tos-display); font-size: 1.3rem; color: var(--tos-abyss); background: var(--tos-btn-face); box-shadow: 0 5px 0 color-mix(in oklab, var(--tos-gold) 50%, black); transition: transform .1s; }
+.fm-sell:active { transform: translateY(3px); }
+.fm-sell:disabled { opacity: .5; }
+
+/* ── Settings ── */
+.cfg { display: flex; flex-direction: column; gap: .7rem; color: var(--tos-text); }
+.cfg-account { display: flex; align-items: center; gap: .8rem; padding: .9rem; border-radius: 1.2rem; background: radial-gradient(80% 80% at 100% 0%, color-mix(in oklab, var(--tos-gold) 18%, transparent), transparent), var(--tos-card); border: 1px solid color-mix(in oklab, var(--tos-gold) 45%, transparent); }
+.cfg-account > div { flex: 1; min-width: 0; }
+.cfg-account small { font-size: .65rem; font-weight: 800; letter-spacing: .1em; color: var(--tos-aqua); }
+.cfg-account h2 { font-family: var(--tos-display); font-size: 1.3rem; color: var(--tos-gold); }
+.cfg-account p { display: flex; align-items: center; gap: .3rem; font-size: .7rem; color: var(--tos-subtle); }
+.cfg-face { position: relative; width: 4rem; height: 4rem; flex: none; border-radius: 1rem; overflow: hidden; border: 2px solid var(--tos-gold); }
+.cfg-face > * { width: 100%; height: 100%; }
+.cfg-face span { position: absolute; bottom: 0; inset-inline: 0; height: auto; display: grid; place-items: center; padding: .1rem; background: color-mix(in oklab, var(--tos-abyss) 70%, transparent); }
+.cfg-faces { padding: .5rem; border-radius: 1rem; background: var(--tos-card); }
+.cfg-studio { display: flex; align-items: center; gap: .7rem; padding: .9rem; text-align: start; border-radius: 1.2rem; color: var(--tos-text); background: linear-gradient(120deg, color-mix(in oklab, var(--tos-aqua) 30%, transparent), color-mix(in oklab, var(--tos-violet) 25%, transparent)); border: 1px solid color-mix(in oklab, var(--tos-aqua) 55%, transparent); }
+.cfg-studio > div { flex: 1; display: flex; flex-direction: column; }
+.cfg-studio b { font-family: var(--tos-display); font-size: 1.1rem; }
+.cfg-studio small { font-size: .7rem; color: var(--tos-subtle); }
+.cfg-studio svg { color: var(--tos-gold); }
+.cfg-list { display: flex; flex-direction: column; gap: .4rem; }
+.cfg-row { display: flex; align-items: center; gap: .6rem; padding: .6rem .7rem; border-radius: 1rem; background: var(--tos-card); border: 1px solid var(--tos-line); }
+.cfg-row b { flex: 1; font-size: .85rem; }
+.cfg-ico { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .6rem; color: var(--tos-aqua); background: color-mix(in oklab, var(--tos-aqua) 14%, transparent); }
+.cfg-ico svg { width: 1rem; height: 1rem; }
+.cfg-switch { position: relative; width: 2.6rem; height: 1.4rem; border-radius: 999px; background: color-mix(in oklab, var(--tos-abyss) 80%, transparent); border: 1px solid var(--tos-line); transition: .2s; }
+.cfg-switch span { position: absolute; top: .12rem; inset-inline-start: .15rem; width: 1rem; height: 1rem; border-radius: 50%; background: var(--tos-subtle); transition: .2s; }
+.cfg-switch.on { background: var(--tos-btn-face); }
+.cfg-switch.on span { inset-inline-start: 1.4rem; background: var(--tos-abyss); }
+.cfg-seg { display: flex; gap: .2rem; padding: .15rem; border-radius: 999px; background: color-mix(in oklab, var(--tos-abyss) 70%, transparent); }
+.cfg-seg button { padding: .25rem .55rem; border-radius: 999px; font-size: .68rem; font-weight: 800; color: var(--tos-subtle); }
+.cfg-seg button.on { color: var(--tos-abyss); background: var(--tos-btn-face); }
+.cfg-admin { display: block; padding: .6rem; text-align: center; font-weight: 800; border-radius: 1rem; color: var(--tos-gold); border: 1px dashed var(--tos-gold); }
+.cfg-logout { display: flex; align-items: center; justify-content: center; gap: .4rem; padding: .6rem; border-radius: 1rem; font-weight: 800; color: var(--destructive); border: 1px solid color-mix(in oklab, var(--destructive) 50%, transparent); }
+
+/* ── Sea studio ── */
+.studio { display: grid; grid-template-columns: minmax(0, 1fr); gap: .8rem; color: var(--tos-text); }
+@media (min-width: 760px) { .studio { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); } }
+.studio-stage { position: relative; width: 100%; max-width: 22rem; margin-inline: auto; overflow: hidden; border-radius: 1.2rem; border: 1.5px solid color-mix(in oklab, var(--tos-gold) 55%, transparent); touch-action: none; cursor: grab; }
+.studio-marker { position: absolute; width: 1rem; height: 1rem; translate: -50% -50%; border-radius: 50%; border: 2px solid var(--tos-gold); pointer-events: none; box-shadow: 0 0 10px var(--tos-gold); }
+.studio-panel { display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
+.studio-panel section { padding: .75rem; border-radius: 1rem; background: var(--tos-card); border: 1px solid var(--tos-line); }
+.studio-panel h3 { margin-bottom: .5rem; font-family: var(--tos-display); color: var(--tos-gold); }
+.studio-panel h3 small { font-family: inherit; font-size: .65rem; color: var(--tos-subtle); }
+.studio-themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.2rem, 1fr)); gap: .4rem; }
+.studio-theme { overflow: hidden; border-radius: .7rem; border: 2px solid var(--tos-line); background: var(--tos-abyss); }
+.studio-theme.on { border-color: var(--tos-gold); }
+.studio-theme img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+.studio-theme small { display: block; padding: .15rem; font-size: .58rem; font-weight: 700; }
+.studio-chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .4rem; }
+.studio-chip { display: inline-flex; align-items: center; gap: .25rem; padding: .3rem .65rem; border-radius: 999px; font-size: .72rem; font-weight: 800; color: var(--tos-text); border: 1px solid color-mix(in oklab, var(--tos-aqua) 50%, transparent); }
+.studio-chip.on { color: var(--tos-abyss); background: var(--tos-btn-face); border-color: transparent; }
+.studio-chip.danger { color: var(--destructive); border-color: color-mix(in oklab, var(--destructive) 50%, transparent); }
+.studio-range { display: block; margin: .35rem 0; font-size: .75rem; }
+.studio-range span { display: flex; justify-content: space-between; }
+.studio-range output { color: var(--tos-aqua); direction: ltr; }
+.studio-range input { width: 100%; accent-color: var(--tos-gold); }
+.studio-check { display: flex; align-items: center; gap: .4rem; margin: .4rem 0; font-size: .75rem; }
+.studio-json { width: 100%; height: 7rem; padding: .4rem; font: 10px ui-monospace, monospace; color: var(--tos-text); background: color-mix(in oklab, var(--tos-abyss) 80%, transparent); border: 1px solid var(--tos-line); border-radius: .6rem; margin-bottom: .4rem; }

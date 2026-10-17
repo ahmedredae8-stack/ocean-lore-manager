@@ -11,13 +11,13 @@ import { playSfx } from "@/lib/sound";
 export type DockAction = "chat" | "stats" | "bag" | "store" | "quests" | "battle" | "tribe";
 
 const items: { id: DockAction; label: string; image: string }[] = [
-  { id: "chat", label: "الدردشة", image: dockChat },
-  { id: "stats", label: "الترتيب", image: dockStats },
-  { id: "bag", label: "مخزن العتاد", image: dockBag },
   { id: "store", label: "المتجر", image: dockStore },
+  { id: "bag", label: "مخزن العتاد", image: dockBag },
   { id: "quests", label: "التنبيهات", image: dockQuests },
   { id: "battle", label: "الأعداء", image: dockBattle },
   { id: "tribe", label: "القبيلة", image: dockTribe },
+  { id: "stats", label: "الترتيب", image: dockStats },
+  { id: "chat", label: "الدردشة", image: dockChat },
 ];
 
 export function BottomDock({ onAction }: { onAction: (action: DockAction) => void }) {

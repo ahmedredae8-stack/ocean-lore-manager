@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as FishMarketRouteImport } from './routes/fish-market'
 import { Route as FriendsRouteImport } from './routes/friends'
+import { Route as SeaStudioRouteImport } from './routes/sea-studio'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ShipyardRouteImport } from './routes/shipyard'
 import { Route as TribesRouteImport } from './routes/tribes'
@@ -50,6 +51,11 @@ const FriendsRoute = FriendsRouteImport.update({
   path: '/friends',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeaStudioRoute = SeaStudioRouteImport.update({
+  id: '/sea-studio',
+  path: '/sea-studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/fish-market': typeof FishMarketRoute
   '/friends': typeof FriendsRoute
+  '/sea-studio': typeof SeaStudioRoute
   '/settings': typeof SettingsRoute
   '/shipyard': typeof ShipyardRoute
   '/tribes': typeof TribesRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/fish-market': typeof FishMarketRoute
   '/friends': typeof FriendsRoute
+  '/sea-studio': typeof SeaStudioRoute
   '/settings': typeof SettingsRoute
   '/shipyard': typeof ShipyardRoute
   '/tribes': typeof TribesRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/fish-market': typeof FishMarketRoute
   '/friends': typeof FriendsRoute
+  '/sea-studio': typeof SeaStudioRoute
   '/settings': typeof SettingsRoute
   '/shipyard': typeof ShipyardRoute
   '/tribes': typeof TribesRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/fish-market'
     | '/friends'
+    | '/sea-studio'
     | '/settings'
     | '/shipyard'
     | '/tribes'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/fish-market'
     | '/friends'
+    | '/sea-studio'
     | '/settings'
     | '/shipyard'
     | '/tribes'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/fish-market'
     | '/friends'
+    | '/sea-studio'
     | '/settings'
     | '/shipyard'
     | '/tribes'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   FishMarketRoute: typeof FishMarketRoute
   FriendsRoute: typeof FriendsRoute
+  SeaStudioRoute: typeof SeaStudioRoute
   SettingsRoute: typeof SettingsRoute
   ShipyardRoute: typeof ShipyardRoute
   TribesRoute: typeof TribesRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FriendsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sea-studio': {
+      id: '/sea-studio'
+      path: '/sea-studio'
+      fullPath: '/sea-studio'
+      preLoaderRoute: typeof SeaStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   FishMarketRoute: FishMarketRoute,
   FriendsRoute: FriendsRoute,
+  SeaStudioRoute: SeaStudioRoute,
   SettingsRoute: SettingsRoute,
   ShipyardRoute: ShipyardRoute,
   TribesRoute: TribesRoute,

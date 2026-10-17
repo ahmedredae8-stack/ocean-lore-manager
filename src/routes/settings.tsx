@@ -1,37 +1,102 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Eye, LogOut, Music2, Settings2, ShieldCheck, Waves } from "lucide-react";
+import { Bell, Camera, Gauge, LogOut, Music2, ShieldCheck, Sparkles, Vibrate, Waves } from "lucide-react";
 
 import { CaptainAvatar, nameSeed } from "@/components/GameSprite";
-import { Button } from "@/components/ui/button";
+import { CaptainGate } from "@/components/CaptainGate";
 import { usePlayer } from "@/hooks/usePlayer";
+import { CAPTAINS } from "@/lib/art";
 import { signOutCaptain } from "@/lib/auth";
-import { clearPlayer } from "@/lib/player";
 import { isArtworkAdmin } from "@/lib/artwork";
-import { isMuted, setMuted, startAmbient } from "@/lib/sound";
+import { clearPlayer, saveAvatarToAccount, saveAvatarUrl } from "@/lib/player";
+import { isMuted, playSfx, setMuted, startAmbient } from "@/lib/sound";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "إعدادات القبطان — عرش البحار" }, { name: "description", content: "إعدادات حساب القبطان والصوت والحركة في عرش البحار." }, { property: "og:title", content: "إعدادات القبطان — عرش البحار" }, { property: "og:description", content: "تحكم في حسابك وتجربة اللعب." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
-  component: SettingsPage,
+  head: () => ({ meta: [{ title: "إعدادات القبطان — عرش البحار" }, { name: "description", content: "حساب القبطان، صورته، الصوت، جودة الرسوم واستوديو البحر." }, { property: "og:title", content: "إعدادات القبطان — عرش البحار" }, { property: "og:description", content: "تحكم في حسابك وتجربة اللعب." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
+  component: () => <SettingsPage />,
 });
 
-export function SettingsPage() {
-  const { player } = usePlayer();
-  const navigate = useNavigate();
-  const [sound, setSound] = useState(true);
-  const [motion, setMotion] = useState(true);
-  const [contrast, setContrast] = useState(false);
-  const [admin, setAdmin] = useState(false);
-  useEffect(() => { void isArtworkAdmin().then(setAdmin).catch(() => setAdmin(false)); }, []);
-  useEffect(() => { setSound(!isMuted()); setMotion(localStorage.getItem("ib.motion") !== "off"); setContrast(localStorage.getItem("ib.contrast") === "on"); }, []);
-  const toggleSound = () => { const next = !sound; setSound(next); setMuted(!next); if (next) startAmbient(); };
-  const toggleMotion = () => { const next = !motion; setMotion(next); localStorage.setItem("ib.motion", next ? "on" : "off"); document.documentElement.classList.toggle("reduce-game-motion", !next); };
-  const toggleContrast = () => { const next = !contrast; setContrast(next); localStorage.setItem("ib.contrast", next ? "on" : "off"); document.documentElement.classList.toggle("game-contrast", next); };
-  const logout = async () => { await signOutCaptain(); clearPlayer(); void navigate({ to: "/auth", replace: true }); };
+const pref = (k: string, d: string) => (typeof localStorage === "undefined" ? d : localStorage.getItem(k) ?? d);
 
-  return <main className="social-page" dir="rtl"><div className="social-wrap settings-wrap"><header className="social-titlebar"><Link to="/" className="icon-control" aria-label="رجوع"><ArrowRight /></Link><div><span>غرفة القيادة</span><h1>إعدادات القبطان</h1></div><Settings2 /></header><section className="account-banner"><CaptainAvatar seed={player?.avatar_index ?? nameSeed(player?.name ?? "قبطان")} url={player?.avatar_url} /><div><small>الحساب الحالي</small><h2>{player?.name ?? "قبطان الخليج"}</h2><p>{player ? "حساب القبطان" : "لم تسجل الدخول بعد"}</p></div><ShieldCheck /></section><section className="settings-panel"><h2 className="settings-section-title">تفضيلات الإبحار</h2><SettingRow icon={<Music2 />} title="أصوات اللعبة" detail="الأمواج والأزرار والمؤثرات" enabled={sound} onToggle={toggleSound} /><SettingRow icon={<Waves />} title="حركة المشهد" detail="حركة الخلفيات والعناصر" enabled={motion} onToggle={toggleMotion} /><SettingRow icon={<Eye />} title="وضوح أعلى" detail="زيادة تباين النصوص واللوحات" enabled={contrast} onToggle={toggleContrast} /></section>{admin && <Link to="/admin" className="dock-tab active" style={{ display: "flex", justifyContent: "center", marginBottom: "0.75rem" }}>استوديو وضعيات السفن والصواريخ</Link>}<Button variant="destructive" className="logout-button" onClick={logout}><LogOut /> تسجيل الخروج</Button></div></main>;
+async function toPortrait(file: File) {
+  const bmp = await createImageBitmap(file);
+  const s = Math.min(bmp.width, bmp.height);
+  const c = document.createElement("canvas");
+  c.width = c.height = 256;
+  c.getContext("2d")!.drawImage(bmp, (bmp.width - s) / 2, (bmp.height - s) / 2, s, s, 0, 0, 256, 256);
+  return c.toDataURL("image/jpeg", 0.82);
 }
 
-function SettingRow({ icon, title, detail, enabled, onToggle }: { icon: React.ReactNode; title: string; detail: string; enabled: boolean; onToggle: () => void }) {
-  return <div className="setting-row"><span className="setting-icon">{icon}</span><div><h3>{title}</h3><p>{detail}</p></div><Button variant="ghost" className={enabled ? "game-switch switch-on" : "game-switch"} onClick={onToggle} role="switch" aria-checked={enabled} aria-label={title}><span /></Button></div>;
+export function SettingsPage({ onOpenStudio }: { onOpenStudio?: () => void }) {
+  const { player, setPlayer, refresh } = usePlayer();
+  const navigate = useNavigate();
+  const [sound, setSound] = useState(true);
+  const [quality, setQuality] = useState("high");
+  const [vibrate, setVibrate] = useState(true);
+  const [notify, setNotify] = useState(true);
+  const [admin, setAdmin] = useState(false);
+  const [faces, setFaces] = useState(false);
+  const [gate, setGate] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { void isArtworkAdmin().then(setAdmin).catch(() => setAdmin(false)); }, [player?.id]);
+  useEffect(() => { setSound(!isMuted()); setQuality(pref("ib.quality", "high")); setVibrate(pref("ib.vibrate", "on") === "on"); setNotify(pref("ib.notify", "on") === "on"); }, []);
+
+  const store = (k: string, v: string) => { localStorage.setItem(k, v); playSfx("click", 0.5); };
+  const toggleSound = () => { const n = !sound; setSound(n); setMuted(!n); if (n) startAmbient(); };
+  const pickQuality = (q: string) => { setQuality(q); store("ib.quality", q); document.documentElement.classList.toggle("reduce-game-motion", q === "low"); };
+  const logout = async () => { await signOutCaptain(); clearPlayer(); setPlayer(null); void navigate({ to: "/", replace: true }); };
+
+  const chooseFace = async (i: number) => { if (!player) return; await saveAvatarToAccount(player.id, i); await saveAvatarUrl(player.id, null); setPlayer({ ...player, avatar_index: i, avatar_url: null }); setFaces(false); };
+  const uploadFace = async (f?: File) => { if (!f || !player) return; const url = await toPortrait(f); await saveAvatarUrl(player.id, url); setPlayer({ ...player, avatar_url: url }); setFaces(false); };
+
+  return (
+    <div className="cfg" dir="rtl">
+      <section className="cfg-account">
+        <button type="button" className="cfg-face" onClick={() => player && setFaces((v) => !v)} aria-label="تغيير الصورة">
+          <CaptainAvatar seed={player?.avatar_index ?? nameSeed(player?.name ?? "قبطان")} url={player?.avatar_url} />
+          {player && <span><Camera className="h-3.5 w-3.5" /></span>}
+        </button>
+        <div>
+          <small>حساب القبطان</small>
+          <h2>{player?.name ?? "زائر"}</h2>
+          <p>{player ? <><ShieldCheck className="h-3.5 w-3.5" /> الحساب محمي ومحفوظ</> : "سجّل دخولك لحفظ تقدّمك"}</p>
+        </div>
+        {!player && <button type="button" className="tos-btn" onClick={() => setGate(true)}>تسجيل الدخول</button>}
+      </section>
+
+      {faces && player && (
+        <div className="gate-grid cfg-faces">
+          {CAPTAINS.map((src, i) => <button key={src} type="button" className="gate-face" onClick={() => void chooseFace(i)}><img src={src} alt="" /></button>)}
+          <button type="button" className="gate-face gate-upload" onClick={() => fileRef.current?.click()}><Camera /><small>من جهازك</small></button>
+          <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { void uploadFace(e.target.files?.[0]); e.target.value = ""; }} />
+        </div>
+      )}
+
+      <button type="button" className="cfg-studio" onClick={() => { playSfx("click", 0.7); if (onOpenStudio) onOpenStudio(); else void navigate({ to: "/sea-studio" }); }}>
+        <Waves /><div><b>استوديو البحر</b><small>الأمواج، الزبد، اللمعان، الخلفيات ومكان السفن</small></div><Sparkles />
+      </button>
+
+      <section className="cfg-list">
+        <Row icon={<Music2 />} title="الصوت والموسيقى" on={sound} onToggle={toggleSound} />
+        <Row icon={<Vibrate />} title="الاهتزاز" on={vibrate} onToggle={() => { setVibrate(!vibrate); store("ib.vibrate", vibrate ? "off" : "on"); }} />
+        <Row icon={<Bell />} title="إشعارات عودة السفن" on={notify} onToggle={() => { setNotify(!notify); store("ib.notify", notify ? "off" : "on"); }} />
+        <div className="cfg-row">
+          <span className="cfg-ico"><Gauge /></span><b>جودة الرسوم</b>
+          <div className="cfg-seg">
+            {[["low", "منخفضة"], ["mid", "متوسطة"], ["high", "عالية"]].map(([k, l]) => <button key={k} type="button" className={quality === k ? "on" : ""} onClick={() => pickQuality(k!)}>{l}</button>)}
+          </div>
+        </div>
+      </section>
+
+      {admin && <Link to="/admin" className="cfg-admin">استوديو الأدمن — وضعيات السفن</Link>}
+      {player && <button type="button" className="cfg-logout" onClick={() => void logout()}><LogOut className="h-4 w-4" /> تسجيل الخروج</button>}
+
+      {gate && <CaptainGate onReady={(p) => { setPlayer(p); setGate(false); void refresh(); }} />}
+    </div>
+  );
+}
+
+function Row({ icon, title, on, onToggle }: { icon: React.ReactNode; title: string; on: boolean; onToggle: () => void }) {
+  return <div className="cfg-row"><span className="cfg-ico">{icon}</span><b>{title}</b><button type="button" role="switch" aria-checked={on} aria-label={title} className={on ? "cfg-switch on" : "cfg-switch"} onClick={onToggle}><span /></button></div>;
 }

@@ -12,6 +12,8 @@ import { TradingFloor } from "@/components/TradingFloor";
 import { TopHud } from "@/components/TopHud";
 import { DailyReward } from "@/components/DailyReward";
 import { QuestBoard } from "@/components/QuestBoard";
+import { CaptainGate } from "@/components/CaptainGate";
+import { SeaStudio } from "@/components/SeaStudio";
 import { BottomDock, type DockAction } from "@/components/BottomDock";
 import { FishingFleet } from "@/components/FishingFleet";
 import { CALIB_EVENT } from "@/components/FleetCalibrator";
@@ -59,11 +61,11 @@ export const Route = createFileRoute("/")({
 });
 
 /** Every destination lives as a floating window over the living sea. */
-type Win = "chat" | "settings" | "fish" | "ship" | "trade-fish" | "trade-ship" | "stats" | "bag" | "alerts" | "enemies" | "tribe" | null;
+type Win = "chat" | "settings" | "studio" | "fish" | "ship" | "trade-fish" | "trade-ship" | "stats" | "bag" | "alerts" | "enemies" | "tribe" | null;
 
 function Index() {
   const stageHost = useStageScale();
-  const { player } = usePlayer();
+  const { player, loading, setPlayer, refresh } = usePlayer();
   const [sound, setSound] = useState(true);
   const [intro, setIntro] = useState(true);
   const [themeId, setThemeId] = useState(defaultTheme.id);
@@ -197,19 +199,7 @@ function Index() {
 
       {questsOpen && (
         <div className="daily-overlay" role="dialog" aria-label="المهام اليومية">
-          <div className="w-full max-w-md">
-            <QuestBoard onClose={() => setQuestsOpen(false)} />
-            <button
-              type="button"
-              onClick={() => {
-                playSfx("click", 0.6);
-                setQuestsOpen(false);
-              }}
-              className="daily-claim"
-            >
-              إغلاق
-            </button>
-          </div>
+          <QuestBoard onClose={() => setQuestsOpen(false)} />
         </div>
       )}
 
@@ -225,11 +215,16 @@ function Index() {
        {win === "tribe" && <GameWindow title="القبيلة" size="xl" onClose={() => setWin(null)}><TribesPage /></GameWindow>}
       {win === "settings" && (
         <GameWindow title="الإعدادات" size="md" onClose={() => setWin(null)}>
-          <SettingsPage />
+          <SettingsPage onOpenStudio={() => setWin("studio")} />
+        </GameWindow>
+      )}
+      {win === "studio" && (
+        <GameWindow title="استوديو البحر" hint="اضبط بحرك وسفنك" size="xl" onClose={() => setWin(null)}>
+          <SeaStudio />
         </GameWindow>
       )}
       {win === "fish" && (
-        <GameWindow title="سوق السمك" hint="بع صيدك وطوّر شباكك" size="lg" onClose={() => setWin(null)}>
+        <GameWindow title="سوق السمك" hint="بع صيدك بسعر الساعة" size="md" onClose={() => setWin(null)}>
           <FishMarket />
         </GameWindow>
       )}
@@ -245,6 +240,7 @@ function Index() {
       )}
 
       {!intro && <DailyReward />}
+      {!intro && !loading && !player && <CaptainGate onReady={(p) => { setPlayer(p); void refresh(); }} />}
 
       {intro && <IntroLoader onDone={finishIntro} />}
       </main>

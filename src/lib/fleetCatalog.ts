@@ -1,77 +1,57 @@
-import hull1 from "@/assets/fleet/hull-1.png";
-import hull2 from "@/assets/fleet/hull-2.png";
-import hull3 from "@/assets/fleet/hull-3.png";
-import hull4 from "@/assets/fleet/hull-4.png";
-import hull5 from "@/assets/fleet/hull-5.png";
-import hull6 from "@/assets/fleet/hull-6.png";
-import starterBoat from "@/assets/fleet/starter-boat.png";
+import shipsData from "@/data/ships.json";
 
-/** The six drawn hulls. Every hull is trimmed to the same canvas and waterline,
- *  so poses never shift: the nets, ropes and spray are drawn over the hull. */
-export const hulls = [hull1, hull2, hull3, hull4, hull5, hull6] as const;
+/** ships.json is the single source of truth for every ship: names, tiers, trips, fish, weapons, shields. */
+export type CatalogFish = { name_ar: string; rarity_ar: string };
+export type CatalogShip = {
+  id: string; name_ar: string; file: string; tier: number; class: string; class_ar: string;
+  weapons: string[]; weapon_slots: number; shield_max: number;
+  fishing: { trip_minutes: number; fish: CatalogFish[] };
+};
+export const SHIP_DATA = shipsData as unknown as { rarity_order_ar: string[]; ships: CatalogShip[] };
+export const RARITY_ORDER = SHIP_DATA.rarity_order_ar;
 
 export type ShipPose = "idle" | "cast" | "submerged" | "haul";
 
 export type FleetShip = {
   id: number;
+  code: string;
   name: string;
-  /** Species this hull pulls up. */
   fish: string[];
-  /** Full trip length in seconds, with no crew aboard. */
   tripSeconds: number;
   source: "store" | "tribe";
-  /** Drawn hull art shared by all four poses. */
+  /** Transparent copy used on the sea. */
   hull: string;
+  /** Original store photo (white background, untouched). */
+  photo: string;
   price: number;
   currency: "coin" | "gem";
+  data: CatalogShip;
 };
 
-type Row = [name: string, fish: string[], seconds: number, hull: number, price: number, currency: "coin" | "gem"];
+const base = (file: string) => file.split("/").pop()!.replace(/\.[a-z]+$/i, "");
 
-const storeRows: Row[] = [
-  ["قارب صغير", ["سردين"], 30, 0, 450, "coin"],
-  ["لنش", ["سردين"], 50, 1, 1200, "coin"],
-  ["مركب", ["سردين", "قد"], 90, 0, 3200, "coin"],
-  ["مركب سريع", ["حفش", "محار"], 120, 1, 7500, "coin"],
-  ["مركب شراعي", ["محار", "سلور"], 180, 2, 14000, "coin"],
-  ["سفينة شراعية", ["قد", "دنيس"], 240, 3, 26000, "coin"],
-  ["سفينة صيد", ["مفلطح", "سلمون"], 360, 4, 48000, "coin"],
-  ["سفينة صيد كبيرة", ["سلمون", "كريل"], 600, 4, 90000, "coin"],
-  ["مركب كمين", ["سرطان البحر", "قد"], 900, 2, 160000, "coin"],
-  ["يخت", ["سلمون", "سلطعون"], 1080, 5, 280000, "coin"],
-  ["مركب متقدم", ["سمك نهري", "مفلطح"], 1320, 3, 480000, "coin"],
-  ["مركب ثلجي", ["حبار", "ثعبان البحر"], 1500, 4, 750000, "coin"],
-  ["حفارة", ["مانتا راي", "حبار"], 1800, 4, 120, "gem"],
-  ["معرض البحرية", ["سلور", "مانتا راي"], 2100, 5, 220, "gem"],
-  ["مركز أبحاث السفن", ["جراد البحر", "سمكة الأفعى"], 2400, 5, 420, "gem"],
-  ["غواصة", ["الحوت الصيني", "الحوت القاتل"], 3000, 5, 950, "gem"],
-];
+export const fleetCatalog: FleetShip[] = SHIP_DATA.ships.map((s, i) => ({
+  id: i + 1,
+  code: s.id,
+  name: s.name_ar,
+  fish: s.fishing.fish.map((f) => f.name_ar),
+  tripSeconds: s.fishing.trip_minutes * 60,
+  source: "store",
+  hull: `/ships/sea/${base(s.file)}.png`,
+  photo: `/ships/catalog/${base(s.file)}.jpg`,
+  // Prices are set by the admin in the studio (ship overrides).
+  price: 0,
+  currency: "coin",
+  data: s,
+}));
 
-const tribeRows: Row[] = [
-  ["ريح", ["سردين", "شمس المحيط"], 30, 0, 60, "gem"],
-  ["نار", ["سردين", "التونة الوثابة"], 30, 1, 60, "gem"],
-  ["برق", ["سردين", "مكاريل"], 30, 2, 60, "gem"],
-];
-
-const build = (rows: Row[], source: "store" | "tribe", offset: number): FleetShip[] =>
-  rows.map(([name, fish, tripSeconds, hull, price, currency], index) => ({
-    id: offset + index + 1,
-    name,
-    fish,
-    tripSeconds,
-    source,
-    // The first store boat is the default starter and has its own drawn hull.
-    hull: source === "store" && index === 0 ? starterBoat : hulls[hull]!,
-    price,
-    currency,
-  }));
-
-export const fleetCatalog: FleetShip[] = [
-  ...build(storeRows, "store", 0),
-  ...build(tribeRows, "tribe", storeRows.length),
-];
-
+export const hulls = fleetCatalog.map((s) => s.hull);
 export const starterShip = fleetCatalog[0]!;
+
+export const WEAPON_AR: Record<string, string> = {
+  cannon: "المدفع", mortar: "الهاون", missile: "الصواريخ", torpedo: "الطوربيد",
+  fire_barrel: "الجمرة", frost_shell: "الصقيع", harpoon: "الحربة", sun: "شمس الليل",
+};
 
 /** "1د 30ث" style trip label. */
 export function tripLabel(seconds: number) {

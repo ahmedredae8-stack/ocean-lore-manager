@@ -28,3 +28,10 @@
 - [x] Finish the tribe, messages, and settings window presentation; authenticated messaging requires the user's existing sign-in.
 - [ ] Finish the sign-in screen with reliable default portraits and optional profile artwork.
 - [ ] Complete actual purchases, inventory persistence, battle events, and damage/catch rankings when their gameplay and records are available.
+
+## Ships catalog (pending approval)
+- [ ] Fix SeaScene TS error, sea engine/studio, remove ship upload
+- [ ] Shields pack -> src/shields + /shields-test
+- [ ] Replace store ships with 14 ships from ships.json (single data source)
+- [ ] Ship detail card, simple fishing trip timer, empty weapon/shield slots
+- [ ] Link ships to sea engine + admin studio; admin picks starter ships

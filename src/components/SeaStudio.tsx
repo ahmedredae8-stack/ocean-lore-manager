@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Copy, Pause, Play, Plus, RotateCcw, Save, Trash2, Upload } from "lucide-react";
+import { Copy, Pause, Play, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
+import { fleetCatalog } from "@/lib/fleetCatalog";
 
 import SeaScene, { type SeaParams, type SeaShip, type SeaTheme } from "@/components/SeaScene";
 import seaThemes from "@/data/seaThemes.json";
@@ -14,7 +15,7 @@ const DEFAULT_PARAMS: Required<SeaParams> = { amp: 1, spd: 1, ref: 1, sun: 1, fo
 const DEFAULT: StudioConfig = {
   themeId: THEMES[0]!.id,
   params: DEFAULT_PARAMS,
-  ships: [{ id: "s1", src: "/ships/sample_fishing_boat.png", x: 0.62, y: 0.8, width: 0.34, waterline: 0.9 }],
+  ships: [{ id: "s1", src: fleetCatalog[0]!.hull, x: 0.62, y: 0.8, width: 0.34, waterline: 0.9 }],
 };
 
 export function loadStudio(): StudioConfig {
@@ -45,7 +46,7 @@ export function SeaStudio() {
   const [saved, setSaved] = useState("");
   const wrap = useRef<HTMLDivElement>(null);
   const drag = useRef(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [pick, setPick] = useState(fleetCatalog[0]!.code);
 
   useEffect(() => setCfg(loadStudio()), []);
   const theme = THEMES.find((t) => t.id === cfg.themeId) ?? THEMES[0]!;
@@ -80,19 +81,12 @@ export function SeaStudio() {
     setSel(cfg.ships.length);
   };
 
-  const upload = (f?: File) => {
-    if (!f || !f.type.startsWith("image/")) return;
-    const r = new FileReader();
-    r.onload = () => addShip(String(r.result));
-    r.readAsDataURL(f);
-  };
-
   const save = () => {
     try { localStorage.setItem(KEY, JSON.stringify(cfg)); setSaved("تم حفظ بحرك"); playSfx("click", 0.8); }
-    catch { setSaved("الصور المرفوعة كبيرة جداً للحفظ"); }
+    catch { setSaved("تعذّر الحفظ"); }
   };
 
-  const json = JSON.stringify({ theme: cfg.themeId, params, ships: cfg.ships.map((s) => ({ ...s, src: s.src.startsWith("data:") ? "(صورة مرفوعة)" : s.src })) }, null, 1);
+  const json = JSON.stringify({ theme: cfg.themeId, params, ships: cfg.ships.map((s) => ({ ...s, src: s.src })) }, null, 1);
 
   return (
     <div className="studio" dir="rtl">
@@ -131,9 +125,10 @@ export function SeaStudio() {
           <h3>السفن <small>اسحب السفينة على البحر</small></h3>
           <div className="studio-chips">
             {cfg.ships.map((s, i) => <button key={s.id} type="button" className={i === sel ? "studio-chip on" : "studio-chip"} onClick={() => setSel(i)}>سفينة {i + 1}</button>)}
-            <button type="button" className="studio-chip" onClick={() => addShip("/ships/sample_fishing_boat.png")}><Plus className="h-3.5 w-3.5" />سفينة</button>
-            <button type="button" className="studio-chip" onClick={() => fileRef.current?.click()}><Upload className="h-3.5 w-3.5" />رفع صورة</button>
-            <input ref={fileRef} type="file" accept="image/png,image/webp,image/*" hidden onChange={(e) => { upload(e.target.files?.[0]); e.target.value = ""; }} />
+            <select className="studio-select" value={pick} onChange={(e) => setPick(e.target.value)} aria-label="اختر سفينة">
+              {fleetCatalog.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
+            </select>
+            <button type="button" className="studio-chip" onClick={() => addShip(fleetCatalog.find((s) => s.code === pick)!.hull)}><Plus className="h-3.5 w-3.5" />أضف للبحر</button>
           </div>
           {ship && (
             <>

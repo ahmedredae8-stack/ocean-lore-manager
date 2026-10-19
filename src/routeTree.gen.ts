@@ -17,6 +17,7 @@ import { Route as FishMarketRouteImport } from './routes/fish-market'
 import { Route as FriendsRouteImport } from './routes/friends'
 import { Route as SeaStudioRouteImport } from './routes/sea-studio'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ShieldsTestRouteImport } from './routes/shields-test'
 import { Route as ShipyardRouteImport } from './routes/shipyard'
 import { Route as TribesRouteImport } from './routes/tribes'
 import { Route as VillageIdRouteImport } from './routes/village.$id'
@@ -61,6 +62,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShieldsTestRoute = ShieldsTestRouteImport.update({
+  id: '/shields-test',
+  path: '/shields-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShipyardRoute = ShipyardRouteImport.update({
   id: '/shipyard',
   path: '/shipyard',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/friends': typeof FriendsRoute
   '/sea-studio': typeof SeaStudioRoute
   '/settings': typeof SettingsRoute
+  '/shields-test': typeof ShieldsTestRoute
   '/shipyard': typeof ShipyardRoute
   '/tribes': typeof TribesRoute
   '/village/$id': typeof VillageIdRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/friends': typeof FriendsRoute
   '/sea-studio': typeof SeaStudioRoute
   '/settings': typeof SettingsRoute
+  '/shields-test': typeof ShieldsTestRoute
   '/shipyard': typeof ShipyardRoute
   '/tribes': typeof TribesRoute
   '/village/$id': typeof VillageIdRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/friends': typeof FriendsRoute
   '/sea-studio': typeof SeaStudioRoute
   '/settings': typeof SettingsRoute
+  '/shields-test': typeof ShieldsTestRoute
   '/shipyard': typeof ShipyardRoute
   '/tribes': typeof TribesRoute
   '/village/$id': typeof VillageIdRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/friends'
     | '/sea-studio'
     | '/settings'
+    | '/shields-test'
     | '/shipyard'
     | '/tribes'
     | '/village/$id'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/friends'
     | '/sea-studio'
     | '/settings'
+    | '/shields-test'
     | '/shipyard'
     | '/tribes'
     | '/village/$id'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/friends'
     | '/sea-studio'
     | '/settings'
+    | '/shields-test'
     | '/shipyard'
     | '/tribes'
     | '/village/$id'
@@ -168,6 +180,7 @@ export interface RootRouteChildren {
   FriendsRoute: typeof FriendsRoute
   SeaStudioRoute: typeof SeaStudioRoute
   SettingsRoute: typeof SettingsRoute
+  ShieldsTestRoute: typeof ShieldsTestRoute
   ShipyardRoute: typeof ShipyardRoute
   TribesRoute: typeof TribesRoute
   VillageIdRoute: typeof VillageIdRoute
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shields-test': {
+      id: '/shields-test'
+      path: '/shields-test'
+      fullPath: '/shields-test'
+      preLoaderRoute: typeof ShieldsTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shipyard': {
       id: '/shipyard'
       path: '/shipyard'
@@ -264,6 +284,7 @@ const rootRouteChildren: RootRouteChildren = {
   FriendsRoute: FriendsRoute,
   SeaStudioRoute: SeaStudioRoute,
   SettingsRoute: SettingsRoute,
+  ShieldsTestRoute: ShieldsTestRoute,
   ShipyardRoute: ShipyardRoute,
   TribesRoute: TribesRoute,
   VillageIdRoute: VillageIdRoute,

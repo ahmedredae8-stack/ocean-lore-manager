@@ -2882,7 +2882,7 @@
 /* ── Sea studio ── */
 .studio { display: grid; grid-template-columns: minmax(0, 1fr); gap: .8rem; color: var(--tos-text); }
 @media (min-width: 760px) { .studio { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); } }
-.studio-stage { position: relative; width: 100%; max-width: 22rem; margin-inline: auto; overflow: hidden; border-radius: 1.2rem; border: 1.5px solid color-mix(in oklab, var(--tos-gold) 55%, transparent); touch-action: none; cursor: grab; }
+.studio .studio-stage { aspect-ratio: auto; position: relative; width: 100%; max-width: 22rem; margin-inline: auto; overflow: hidden; border-radius: 1.2rem; border: 1.5px solid color-mix(in oklab, var(--tos-gold) 55%, transparent); touch-action: none; cursor: grab; }
 .studio-marker { position: absolute; width: 1rem; height: 1rem; translate: -50% -50%; border-radius: 50%; border: 2px solid var(--tos-gold); pointer-events: none; box-shadow: 0 0 10px var(--tos-gold); }
 .studio-panel { display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
 .studio-panel section { padding: .75rem; border-radius: 1rem; background: var(--tos-card); border: 1px solid var(--tos-line); }
@@ -2903,3 +2903,43 @@
 .studio-range input { width: 100%; accent-color: var(--tos-gold); }
 .studio-check { display: flex; align-items: center; gap: .4rem; margin: .4rem 0; font-size: .75rem; }
 .studio-json { width: 100%; height: 7rem; padding: .4rem; font: 10px ui-monospace, monospace; color: var(--tos-text); background: color-mix(in oklab, var(--tos-abyss) 80%, transparent); border: 1px solid var(--tos-line); border-radius: .6rem; margin-bottom: .4rem; }
+
+/* Ship card, shields test, starter ships */
+.shipcard-overlay { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 1rem; background: color-mix(in oklab, var(--background) 70%, transparent); backdrop-filter: blur(6px); }
+.shipcard { position: relative; width: min(420px, 100%); max-height: 92dvh; overflow-y: auto; padding: 1rem; border-radius: 22px; color: var(--tos-text, var(--foreground)); background: radial-gradient(120% 70% at 50% 0%, color-mix(in oklab, var(--tos-gold, gold) 22%, transparent), transparent 60%), linear-gradient(180deg, #13244a, #0a1530); border: 2px solid color-mix(in oklab, var(--tos-gold, gold) 70%, transparent); box-shadow: 0 20px 50px rgb(0 0 0 / .55), inset 0 0 0 1px rgb(255 255 255 / .06); }
+.shipcard-x { position: absolute; top: .6rem; left: .6rem; z-index: 2; width: 2rem; height: 2rem; display: grid; place-items: center; border-radius: 999px; background: rgb(0 0 0 / .35); }
+.shipcard-photo { position: relative; border-radius: 14px; overflow: hidden; background: #fff; }
+.shipcard-photo img { width: 100%; aspect-ratio: 4/3; object-fit: contain; display: block; }
+.shipcard-tier { position: absolute; bottom: .5rem; right: .5rem; padding: .15rem .6rem; border-radius: 999px; font-weight: 900; font-size: .75rem; color: #2a1a00; background: linear-gradient(#ffe08a, #d9a536); }
+.shipcard h3 { margin: .7rem 0 .2rem; font-size: 1.25rem; font-weight: 900; color: #ffe08a; text-align: center; }
+.shipcard h4 { display: flex; gap: .35rem; align-items: center; margin: .8rem 0 .35rem; font-weight: 800; font-size: .9rem; }
+.shipcard h4 svg, .shipcard dt svg, .shipcard .slot svg { width: 1rem; height: 1rem; }
+.shipcard-desc { text-align: center; opacity: .8; font-size: .85rem; }
+.shipcard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-top: .6rem; }
+.shipcard-stats div { padding: .45rem .6rem; border-radius: 12px; background: rgb(255 255 255 / .06); border: 1px solid rgb(255 224 138 / .2); }
+.shipcard-stats dt { display: flex; gap: .3rem; align-items: center; font-size: .7rem; opacity: .75; }
+.shipcard-stats dd { font-weight: 900; }
+.shipcard-fish { display: flex; flex-wrap: wrap; gap: .35rem; }
+.shipcard-fish li { padding: .25rem .6rem; border-radius: 10px; font-weight: 800; font-size: .8rem; background: rgb(255 255 255 / .07); border: 1px solid var(--rc, #9aa); display: flex; gap: .35rem; align-items: baseline; }
+.shipcard-fish small { color: var(--rc); font-size: .65rem; }
+.shipcard-fish .r0 { --rc: #b8c4cf; } .shipcard-fish .r1 { --rc: #6fdc8c; } .shipcard-fish .r2 { --rc: #5aa9ff; } .shipcard-fish .r3 { --rc: #c37bff; } .shipcard-fish .r4 { --rc: #ffc94a; }
+.shipcard-weapons { font-size: .85rem; }
+.shipcard-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: .4rem; margin-top: .6rem; }
+.shipcard .slot { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .6rem .3rem; border-radius: 12px; font-size: .7rem; opacity: .75; border: 1.5px dashed rgb(255 224 138 / .45); text-align: center; }
+.shipcard-trip { margin-top: .9rem; display: grid; gap: .4rem; text-align: center; }
+.shipcard-bar { height: .55rem; border-radius: 999px; background: rgb(255 255 255 / .1); overflow: hidden; }
+.shipcard-bar i { display: block; height: 100%; background: linear-gradient(90deg, #ffe08a, #d9a536); transition: width 1s linear; }
+.shipcard-haul { font-weight: 800; color: #ffe08a; }
+.studio-select { padding: .3rem .5rem; border-radius: 999px; font-size: .75rem; font-weight: 700; color: var(--tos-text, inherit); background: rgb(0 0 0 / .3); border: 1px solid rgb(255 255 255 / .2); }
+.shield-stage { position: relative; display: grid; place-items: center; min-height: 300px; padding: 3rem 1rem 1rem; border-radius: 18px; overflow: hidden; cursor: crosshair; background: linear-gradient(180deg, #2a5d8f 0%, #8ec1df 55%, #1d4e7a 56%, #0b2a4a 100%); }
+.shield-ship { position: relative; width: min(38%, 220px); }
+.shield-ship > img { width: 100%; display: block; }
+.shield-hint { margin: .5rem 0; font-size: .8rem; opacity: .8; text-align: center; }
+.shield-table { width: 100%; margin-top: .8rem; border-collapse: collapse; font-size: .78rem; }
+.shield-table th, .shield-table td { padding: .4rem; border-bottom: 1px solid rgb(255 255 255 / .12); text-align: center; }
+.shield-table tr.on td { background: rgb(255 224 138 / .12); }
+.starter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: .4rem; }
+.starter-pick { display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .35rem; border-radius: 12px; border: 1.5px solid rgb(255 255 255 / .15); font-size: .65rem; text-align: center; cursor: pointer; }
+.starter-pick.on { border-color: #ffd36a; background: rgb(255 211 106 / .12); }
+.starter-pick input { position: absolute; opacity: 0; pointer-events: none; }
+.starter-pick img { width: 100%; height: 44px; object-fit: contain; }

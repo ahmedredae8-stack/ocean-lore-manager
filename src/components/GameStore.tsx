@@ -6,7 +6,8 @@ import { GameSprite } from "@/components/GameSprite";
 import { CREW_ART } from "@/lib/art";
 import { ARMORS, CREWS, GEM_PACKS, WEAPONS } from "@/lib/items";
 import { tripLabel } from "@/lib/fleetCatalog";
-import { useLiveShips } from "@/lib/shipOverrides";
+import { useLiveShips, type LiveShip } from "@/lib/shipOverrides";
+import { ShipCard } from "@/components/ShipCard";
 import { fmt } from "@/lib/ships";
 
 import { currentPhase, phaseLabel, themes } from "@/lib/themes";
@@ -34,6 +35,7 @@ const sectionTitle: Record<StoreTab, string> = {
 
 export function GameStore({ activeId, onSelect, onClose }: { activeId: string; onSelect: (id: string) => void; onClose: () => void }) {
   const [tab, setTab] = useState<StoreTab>("ships");
+  const [shipOpen, setShipOpen] = useState<LiveShip | null>(null);
   const tabs = [
     { id: "gems" as const, label: "جواهر", icon: Gem },
     { id: "crew" as const, label: "طواقم", icon: Users },
@@ -49,15 +51,7 @@ export function GameStore({ activeId, onSelect, onClose }: { activeId: string; o
     if (tab === "weapons") return WEAPONS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · قوة تدميرية ${item.power * 1000}`, price: item.price, currency: item.currency, art: art[`${item.id}:idle`] ? <img src={art[`${item.id}:idle`]} alt="" loading="lazy" /> : <GameSprite atlas="weapon" index={index} /> }));
     if (tab === "crew") return CREWS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · ${item.hours}H`, price: item.price, currency: item.currency, art: <img src={CREW_ART[index % CREW_ART.length]} alt="" loading="lazy" className="crew-photo" /> }));
     if (tab === "armor") return ARMORS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · دفاع ${item.defense * 500}`, price: item.price, currency: item.currency, art: <GameSprite atlas="armor" index={index} /> }));
-    if (tab === "ships")
-      return liveShips.map((ship) => ({
-        id: ship.key,
-        title: ship.name,
-        desc: `${ship.description ? ship.description + " · " : ""}${ship.fish.join(" · ")} · رحلة ${tripLabel(ship.tripSeconds)}${ship.source === "tribe" ? " · من القبيلة" : ""}`,
-        price: ship.price,
-        currency: ship.currency,
-        art: <img className="ship-full" src={art[`${ship.key}:idle`] ?? ship.hull} alt="" loading="lazy" />,
-      }));
+    if (tab === "ships") return [];
 
     return [];
   }, [tab, art, liveShips]);
@@ -98,6 +92,19 @@ export function GameStore({ activeId, onSelect, onClose }: { activeId: string; o
             </>
           )}
           {tab === "gems" && <GemPacks />}
+          {tab === "ships" && (
+            <ul className="store-grid">
+              {liveShips.map((s) => (
+                <li key={s.key}>
+                  <Button variant="ghost" onClick={() => { playSfx("click", 0.5); setShipOpen(s); }} className="store-product item-card">
+                    <span className="product-art"><img className="ship-full" src={s.photo} alt="" loading="lazy" /></span>
+                    <span className="product-copy"><strong>{s.name}</strong><small>مستوى {s.data.tier} · {s.data.class_ar} · رحلة {tripLabel(s.tripSeconds)}</small></span>
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {shipOpen && <ShipCard ship={shipOpen} onClose={() => setShipOpen(null)} />}
           {products.length > 0 && <ProductPicker key={tab} items={products} />}
         </div>
       </section>

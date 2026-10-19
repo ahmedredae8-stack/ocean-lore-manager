@@ -25,6 +25,6 @@ export default function ShieldOverlay({ tier, state = "idle", trigger = 0, impac
   return (
     <div ref={box} className={className}
       style={{ position: "absolute", left: "50%", top: "77%", width, transform: "translate(-50%,-77%)", pointerEvents: "none", lineHeight: 0, ...style }}
-      dangerouslySetInnerHTML={{ __html: raw(tier).replace(/width="\d+" height="\d+"/, 'width="100%"') }} />
+      dangerouslySetInnerHTML={{ __html: (raw(tier) ?? "").replace(/width="\d+" height="\d+"/, 'width="100%"') }} />
   );
 }

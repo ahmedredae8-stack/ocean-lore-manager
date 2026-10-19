@@ -20,7 +20,7 @@ export const Route = createFileRoute("/shields-test")({
 
 type ShieldInfo = { tier: 1 | 2 | 3 | 4 | 5; name_ar: string; blocks: string[]; hits: number; reflect: number; blocks_ultimate: boolean; look: string };
 const DATA = shields as unknown as { viewBox: number[]; states: ShieldState[]; shields: ShieldInfo[] };
-const BLOCK_AR: Record<string, string> = { kinetic: "حركي", fire: "نار", frost: "جليد", pierce: "اختراق", piercing: "اختراق", all: "الجميع" };
+const BLOCK_AR: Record<string, string> = { kinetic: "حركي", fire: "نار", frost: "جليد", pierce: "اختراق", piercing: "اختراق", ice: "جليد", ultimate_half: "شمس الليل (نصف القوة)", all: "الجميع" };
 const STATE_AR: Record<string, string> = { idle: "راحة", spawn: "ظهور", hit: "إصابة", break: "انكسار", reflect: "ارتداد", off: "إخفاء" };
 
 function ShieldsTest() {

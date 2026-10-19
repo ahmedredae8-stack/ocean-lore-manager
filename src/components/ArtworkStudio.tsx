@@ -16,6 +16,7 @@ const poses = {
 type Item = { key: string; name: string; info: string; fallback?: string };
 
 const shipItems: Item[] = fleetCatalog.map(s => ({ key: `ship-${s.id}`, name: s.name, info: `${s.price.toLocaleString("ar-EG")} ${s.currency === "coin" ? "عملة" : "جوهرة"}${s.source === "tribe" ? " · قبيلة" : ""}`, fallback: s.hull }));
+import { saveStarterShips, useStarterShips } from "@/lib/starterShips";
 const rocketItems: Item[] = WEAPONS.map(w => ({ key: w.id, name: w.name, info: `${w.price.toLocaleString("ar-EG")} ${w.currency === "coin" ? "عملة" : "جوهرة"}`, fallback: w.icon }));
 
 export function ArtworkStudio() {
@@ -137,6 +138,7 @@ export function ArtworkStudio() {
       })}
     </div>
     {category === "ship" && <ShipTextEditor key={item.key} productId={item.key} />}
+    <StarterShips />
     <BackgroundUploads />
     {status && <p className="art-status" role="status">{status}</p>}
   </section>;
@@ -191,6 +193,25 @@ function BackgroundUploads() {
     <input ref={ref} type="file" accept="image/png,image/jpeg,image/webp,video/mp4,video/webm" hidden onChange={e => { const f = e.target.files?.[0]; e.target.value = ""; if (f) void upload(f); }} />
     <Button onClick={() => ref.current?.click()}><UploadCloud /> رفع خلفية (صورة أو فيديو)</Button>
     <div className="studio-bgs">{rows.map(r => r.video ? <video key={r.id} src={r.url} muted loop autoPlay playsInline /> : <img key={r.id} src={r.url} alt="خلفية مرفوعة" />)}</div>
+    {msg && <small role="status">{msg}</small>}
+  </div>;
+}
+
+function StarterShips() {
+  const saved = useStarterShips();
+  const [sel, setSel] = useState<string[] | null>(null);
+  const [msg, setMsg] = useState("");
+  const list = sel ?? saved;
+  const toggle = (c: string) => setSel(list.includes(c) ? list.filter(x => x !== c) : [...list, c]);
+  const save = async () => {
+    if (!list.length) { setMsg("اختر سفينة واحدة على الأقل"); return; }
+    const err = await saveStarterShips(list);
+    setMsg(err ? "تعذّر الحفظ — تأكد من صلاحية المشرف" : "تم: هذه سفن البداية لكل لاعب جديد");
+  };
+  return <div className="tos-editor">
+    <h3>سفن البداية للاعبين الجدد</h3>
+    <div className="starter-grid">{fleetCatalog.map(s => <label key={s.code} className={list.includes(s.code) ? "starter-pick on" : "starter-pick"}><input type="checkbox" checked={list.includes(s.code)} onChange={() => toggle(s.code)} /><img src={s.hull} alt="" /><small>{s.name}</small></label>)}</div>
+    <Button onClick={() => void save()}>حفظ سفن البداية</Button>
     {msg && <small role="status">{msg}</small>}
   </div>;
 }

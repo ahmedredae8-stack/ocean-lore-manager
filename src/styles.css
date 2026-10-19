@@ -2882,7 +2882,7 @@
 /* ── Sea studio ── */
 .studio { display: grid; grid-template-columns: minmax(0, 1fr); gap: .8rem; color: var(--tos-text); }
 @media (min-width: 760px) { .studio { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); } }
-.studio-stage { position: relative; width: 100%; max-width: 22rem; margin-inline: auto; overflow: hidden; border-radius: 1.2rem; border: 1.5px solid color-mix(in oklab, var(--tos-gold) 55%, transparent); touch-action: none; cursor: grab; }
+.studio .studio-stage { aspect-ratio: auto; position: relative; width: 100%; max-width: 22rem; margin-inline: auto; overflow: hidden; border-radius: 1.2rem; border: 1.5px solid color-mix(in oklab, var(--tos-gold) 55%, transparent); touch-action: none; cursor: grab; }
 .studio-marker { position: absolute; width: 1rem; height: 1rem; translate: -50% -50%; border-radius: 50%; border: 2px solid var(--tos-gold); pointer-events: none; box-shadow: 0 0 10px var(--tos-gold); }
 .studio-panel { display: flex; flex-direction: column; gap: .8rem; min-width: 0; }
 .studio-panel section { padding: .75rem; border-radius: 1rem; background: var(--tos-card); border: 1px solid var(--tos-line); }

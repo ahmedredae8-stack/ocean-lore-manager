@@ -67,7 +67,7 @@ function ShieldsTest() {
         <table className="shield-table">
           <thead><tr><th>المستوى</th><th>الاسم</th><th>يصدّ</th><th>الضربات</th><th>الارتداد</th></tr></thead>
           <tbody>{DATA.shields.map((s) => (
-            <tr key={s.tier} className={s.tier === tier ? "on" : ""}><td>{s.tier}</td><td>{s.name_ar}</td><td>{s.blocks.map((b) => BLOCK_AR[b] ?? b).join(" + ")}{s.blocks_ultimate ? " + شمس الليل (نصف القوة)" : ""}</td><td>{s.hits}</td><td>{s.reflect ? `${Math.round(s.reflect * (s.reflect <= 1 ? 100 : 1))}%` : "لا"}</td></tr>
+            <tr key={s.tier} className={s.tier === tier ? "on" : ""}><td>{s.tier}</td><td>{s.name_ar}</td><td>{s.blocks.map((b) => BLOCK_AR[b] ?? b).join(" + ")}</td><td>{s.hits}</td><td>{s.reflect ? `${Math.round(s.reflect * (s.reflect <= 1 ? 100 : 1))}%` : "لا"}</td></tr>
           ))}</tbody>
         </table>
       </div>

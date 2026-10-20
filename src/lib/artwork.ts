@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type ArtworkPose = {
   id: string;
-  category: "ship" | "rocket" | "background";
+  category: "ship" | "rocket" | "background" | "store";
   subject: string;
   pose: "idle" | "cast" | "submerged" | "haul" | "flight" | "explosion" | "fire" | "smoke" | "fade" | "day" | "night";
   image_path: string;

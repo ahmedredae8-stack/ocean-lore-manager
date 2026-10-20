@@ -4,7 +4,40 @@ import { Check, Crown, Gem, Minus, Plus, Shield, ShipWheel, Swords, Users, X } f
 import { Button } from "@/components/ui/button";
 import { GameSprite } from "@/components/GameSprite";
 import { CREW_ART } from "@/lib/art";
-import { ARMORS, CREWS, GEM_PACKS, WEAPONS } from "@/lib/items";
+import { CREWS, GEM_PACKS, WEAPONS } from "@/lib/items";
+import ShieldOverlay from "@/shields/ShieldOverlay";
+import shieldData from "@/shields/shields.json";
+import SeaScene from "@/components/SeaScene";
+import { resolveShipArtwork } from "@/lib/shipArtwork";
+import { SEA_WORLDS, getSeaWorld, loadSeaWorldId, saveSeaWorldId } from "@/lib/seaWorld";
+import { useEffect } from "react";
+
+type ShieldInfo = { tier: 1 | 2 | 3 | 4 | 5; id: string; name_ar: string; blocks: string[]; hits: number; reflect: number };
+export const SHIELDS = shieldData.shields as unknown as ShieldInfo[];
+const BLOCK_AR: Record<string, string> = { kinetic: "المقذوفات", fire: "النار", ice: "الجليد", electric: "البرق", pierce: "الاختراق", ultimate: "الضربة القاضية" };
+
+function SeaWorlds() {
+  const [id, setId] = useState(SEA_WORLDS[0]!.id);
+  useEffect(() => setId(loadSeaWorldId()), []);
+  const world = getSeaWorld(id);
+  return (
+    <>
+      <p className="store-section-note">بحر حي يتحرك مع سفينتك — اختر عالمك</p>
+      <div className="sea-world-live"><SeaScene theme={world} ships={[]} style={{ aspectRatio: "16 / 10", width: "100%" }} /><span>{world.name}</span></div>
+      <ul className="store-grid store-worlds">
+        {SEA_WORLDS.map((w) => (
+          <li key={w.id}>
+            <Button variant="ghost" onClick={() => { playSfx("click", 0.6); setId(w.id); saveSeaWorldId(w.id); }} className={w.id === id ? "store-product world-card selected" : "store-product world-card"}>
+              <span className="world-preview"><img src={w.thumb} alt="" loading="lazy" /></span>
+              <span className="product-copy"><strong>{w.name}</strong><small>{w.id === id ? "العالم الحالي" : "مجاني"}</small></span>
+              {w.id === id && <Check className="product-check" />}
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
 import { tripLabel } from "@/lib/fleetCatalog";
 import { useLiveShips, type LiveShip } from "@/lib/shipOverrides";
 import { ShipCard } from "@/components/ShipCard";
@@ -49,8 +82,8 @@ export function GameStore({ activeId, onSelect, onClose }: { activeId: string; o
   const liveShips = useLiveShips();
   const products = useMemo<Product[]>(() => {
     if (tab === "weapons") return WEAPONS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · قوة تدميرية ${item.power * 1000}`, price: item.price, currency: item.currency, art: art[`${item.id}:idle`] ? <img src={art[`${item.id}:idle`]} alt="" loading="lazy" /> : <GameSprite atlas="weapon" index={index} /> }));
-    if (tab === "crew") return CREWS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · ${item.hours}H`, price: item.price, currency: item.currency, art: <img src={CREW_ART[index % CREW_ART.length]} alt="" loading="lazy" className="crew-photo" /> }));
-    if (tab === "armor") return ARMORS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · دفاع ${item.defense * 500}`, price: item.price, currency: item.currency, art: <GameSprite atlas="armor" index={index} /> }));
+    if (tab === "crew") return CREWS.map((item, index) => ({ id: item.id, title: item.name, desc: `${item.desc} · ${item.hours}H`, price: item.price, currency: item.currency, art: <img src={art[`store:crew-${item.id}:idle`] || CREW_ART[index % CREW_ART.length]} alt="" loading="lazy" className="crew-photo" /> }));
+    if (tab === "armor") return SHIELDS.map((s) => ({ id: s.id, title: s.name_ar, desc: `يصد: ${s.blocks.map((b) => BLOCK_AR[b] ?? b).join("، ")} · ${s.hits} ضربة${s.reflect ? ` · يعكس ${Math.round(s.reflect * 100)}%` : ""}`, price: 0, currency: "coin" as const, art: art[`store:shield-${s.id}:idle`] ? <img src={art[`store:shield-${s.id}:idle`]} alt="" loading="lazy" /> : <span className="shield-thumb"><ShieldOverlay tier={s.tier} state="idle" width="100%" /></span> }));
     if (tab === "ships") return [];
 
     return [];
@@ -75,29 +108,14 @@ export function GameStore({ activeId, onSelect, onClose }: { activeId: string; o
         </nav>
         <p className="store-banner">{sectionTitle[tab]}</p>
         <div className="store-body">
-          {tab === "worlds" && (
-            <>
-              <p className="store-section-note">العالم الآن في {phaseLabel(currentPhase())} ويتبدّل تلقائيًا كل ٦ ساعات</p>
-              <ul className="store-grid store-worlds">
-                {themes.map((theme) => (
-                  <li key={theme.id}>
-                    <Button variant="ghost" onClick={() => onSelect(theme.id)} className={theme.id === activeId ? "store-product world-card selected" : "store-product world-card"}>
-                      <span className="world-preview"><img src={theme.day.poster} alt="" loading="lazy" /><img src={theme.night.poster} alt="" loading="lazy" /></span>
-                      <span className="product-copy"><strong>{theme.name}</strong><small>{theme.id === activeId ? "العالم الحالي" : "مجاني"}</small></span>
-                      {theme.id === activeId && <Check className="product-check" />}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
+          {tab === "worlds" && <SeaWorlds />}
           {tab === "gems" && <GemPacks />}
           {tab === "ships" && (
             <ul className="store-grid">
               {liveShips.map((s) => (
                 <li key={s.key}>
                   <Button variant="ghost" onClick={() => { playSfx("click", 0.5); setShipOpen(s); }} className="store-product item-card">
-                    <span className="product-art"><img className="ship-full" src={s.photo} alt="" loading="lazy" /></span>
+                    <span className="product-art"><img className="ship-full" src={resolveShipArtwork(art, s.id, "idle", s.photo)} alt="" loading="lazy" /></span>
                     <span className="product-copy"><strong>{s.name}</strong><small>مستوى {s.data.tier} · {s.data.class_ar} · رحلة {tripLabel(s.tripSeconds)}</small></span>
                   </Button>
                 </li>

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
 
-import { useSeaBackground } from "@/lib/artwork";
 import { IntroLoader } from "@/components/IntroLoader";
 import { GameStore } from "@/components/GameStore";
 import { AlertsWindow, EnemiesWindow, InventoryWindow, RankingsWindow } from "@/components/DockWindows";
@@ -13,7 +12,9 @@ import { TopHud } from "@/components/TopHud";
 import { DailyReward } from "@/components/DailyReward";
 import { QuestBoard } from "@/components/QuestBoard";
 import { CaptainGate } from "@/components/CaptainGate";
-import { SeaStudio } from "@/components/SeaStudio";
+import { SeaStudio, loadStudio } from "@/components/SeaStudio";
+import SeaScene, { type SeaParams } from "@/components/SeaScene";
+import { SEA_WORLDS, SEA_WORLD_EVENT, getSeaWorld, loadSeaWorldId } from "@/lib/seaWorld";
 import { BottomDock, type DockAction } from "@/components/BottomDock";
 import { FishingFleet } from "@/components/FishingFleet";
 import { CALIB_EVENT } from "@/components/FleetCalibrator";
@@ -29,7 +30,7 @@ import {
   currentPhase,
   defaultTheme,
   getAmbient,
-  getScene,
+
   getTheme,
   hotspots,
   loadThemeId,
@@ -75,12 +76,20 @@ function Index() {
   const [phase, setPhase] = useState(currentPhase());
 
   const theme = getTheme(themeId);
-  const bundledScene = getScene(theme, phase);
-  const seaBg = useSeaBackground();
-  const scene = seaBg ? { video: seaBg.video ? seaBg.url : "", poster: seaBg.video ? bundledScene.poster : seaBg.url } : bundledScene;
   const ambient = getAmbient(theme, phase);
 
   useEffect(() => setThemeId(loadThemeId()), []);
+
+  const [seaWorldId, setSeaWorldId] = useState(SEA_WORLDS[0]!.id);
+  const [seaParams, setSeaParams] = useState<SeaParams>({});
+  const seaWorld = getSeaWorld(seaWorldId);
+  useEffect(() => {
+    setSeaWorldId(loadSeaWorldId());
+    setSeaParams(loadStudio().params);
+    const onWorld = (e: Event) => setSeaWorldId(String((e as CustomEvent).detail));
+    window.addEventListener(SEA_WORLD_EVENT, onWorld);
+    return () => window.removeEventListener(SEA_WORLD_EVENT, onWorld);
+  }, []);
 
   // Flip the world between day and night on the player's own clock.
   useEffect(() => {
@@ -137,22 +146,12 @@ function Index() {
   return (
     <div className="game-root" ref={stageHost}>
       {/* Soft bleed so wide screens never show bare black bars */}
-      <img src={scene.poster} alt="" aria-hidden="true" className="stage-backdrop" />
+      <img src={seaWorld.thumb} alt="" aria-hidden="true" className="stage-backdrop" />
 
       <main className="game-stage relative overflow-hidden bg-[oklch(0.15_0.04_250)]">
-      {/* Living scene: a looping video shot of the bay, cropped to always cover */}
+      {/* Living scene: the WebGL sea engine, so boats sit inside the water */}
       <div className="scene-stage">
-        {scene.video ? <video
-          key={scene.video}
-          className="scene-video"
-          src={scene.video}
-          poster={scene.poster}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        /> : <img className="scene-video" src={scene.poster} alt="" />}
+        <SeaScene theme={seaWorld} ships={[]} params={seaParams} className="scene-video scene-sea" style={{ aspectRatio: "auto", width: "100%", height: "100%" }} />
 
         {hotspots.map((h) => (
           <button

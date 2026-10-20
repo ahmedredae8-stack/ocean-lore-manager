@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
 
 import { fleetCatalog, hulls, type ShipPose } from "@/lib/fleetCatalog";
-import { ACTION_ART } from "@/lib/art";
-import { GameSprite } from "@/components/GameSprite";
+import { Anchor, Sailboat, Users, Coins } from "lucide-react";
+import { CREW_ART } from "@/lib/art";
 
 import { FleetCalibrator } from "@/components/FleetCalibrator";
 import { Button } from "@/components/ui/button";
@@ -151,18 +151,18 @@ export function FishingFleet({ themeId, themeName }: { themeId: string; themeNam
           <div key={ship.id} className={laneClasses} style={style}>
             {selected === ship.id && !busy && (
               <div className="ship-actions" role="menu" aria-label={`أوامر السفينة ${ship.id}`}>
-                <Button variant="ghost" role="menuitem" className="ship-action" onClick={() => sail(ship)} title={ship.state === "docked" ? "الذهاب للصيد" : "العودة للميناء"}>
-                  <img src={ACTION_ART.sail} alt="" />
-                  <span>{ship.state === "docked" ? "صيد" : "رجوع"}</span>
-                </Button>
-                <Button variant="ghost" role="menuitem" className="ship-action" onClick={() => { setSelected(null); setCrewFor(ship.id); playSfx("click", 0.65); }} title="تفقد الطاقم">
-                  <img src={ACTION_ART.crew} alt="" />
+                <button type="button" role="menuitem" className="ship-orb ship-orb-sail" onClick={() => sail(ship)} title={ship.state === "docked" ? "الذهاب للصيد" : "العودة للميناء"}>
+                  <i>{ship.state === "docked" ? <Sailboat /> : <Anchor />}</i>
+                  <span>{ship.state === "docked" ? "إبحار" : "رجوع"}</span>
+                </button>
+                <button type="button" role="menuitem" className="ship-orb ship-orb-crew" onClick={() => { setSelected(null); setCrewFor(ship.id); playSfx("click", 0.65); }} title="تفقد الطاقم">
+                  <i><Users /></i>
                   <span>الطاقم</span>
-                </Button>
-                <Button variant="ghost" role="menuitem" className="ship-action" onClick={() => { setSelected(null); setSellFor(ship.id); playSfx("click", 0.65); }} title="بيع السفينة">
-                  <img src={ACTION_ART.sell} alt="" />
+                </button>
+                <button type="button" role="menuitem" className="ship-orb ship-orb-sell" onClick={() => { setSelected(null); setSellFor(ship.id); playSfx("click", 0.65); }} title="بيع السفينة">
+                  <i><Coins /></i>
                   <span>بيع</span>
-                </Button>
+                </button>
               </div>
             )}
             <Button
@@ -240,22 +240,33 @@ export function FishingFleet({ themeId, themeName }: { themeId: string; themeNam
 
 function CrewPanel({ shipId, onClose }: { shipId: number; onClose: () => void }) {
   const [active, setActive] = useState<string | null>(null);
+  const art = useArtworkMap();
   return (
-    <div className="fleet-modal" role="dialog" aria-modal="true" aria-label={`طاقم السفينة ${shipId}`} onClick={onClose}>
-      <section className="crew-panel" dir="rtl" onClick={(event) => event.stopPropagation()}>
-        <header><span className="crew-title-mark" aria-hidden="true">⚓</span><h2>طاقم السفينة {shipId}</h2><Button variant="ghost" size="icon" onClick={onClose} aria-label="إغلاق"><X /></Button></header>
-        <ul>
-          {CREWS.slice(0, 6).map((crew, index) => (
-            <li key={crew.id}>
-              <GameSprite atlas="crew" index={index} className="crew-portrait" />
-              <span className="crew-copy"><strong>{crew.name}</strong><small>{crew.desc}</small></span>
-              <Button disabled={active === crew.id} onClick={() => { setActive(crew.id); playSfx("click", 0.7); }}>
-                {active === crew.id ? "يعمل الآن" : "استخدام"}<small>{active === crew.id ? "04:59:59" : `${crew.hours}H · ${fmt(crew.price)}`}</small>
-              </Button>
-            </li>
-          ))}
+    <div className="daily-overlay" role="dialog" aria-modal="true" aria-label={`طاقم السفينة ${shipId}`} onClick={onClose} dir="rtl">
+      <div className="daily-panel crew-war" onClick={(event) => event.stopPropagation()}>
+        <button type="button" aria-label="إغلاق" onClick={onClose} className="tos-x"><X className="h-4 w-4" /></button>
+        <header className="daily-head">
+          <span className="daily-kicker">نداء الحرب · السفينة {shipId}</span>
+          <h2 className="daily-title">غرفة الطاقم</h2>
+          <div className="daily-streak"><b>{active ? 1 : 0}</b><span>/ 1 بحار على السطح</span></div>
+        </header>
+        <ul className="crew-war-list">
+          {CREWS.map((crew, index) => {
+            const on = active === crew.id;
+            return (
+              <li key={crew.id} className={on ? "crew-war-card on" : "crew-war-card"} style={{ animationDelay: `${index * 90}ms` }}>
+                <span className="crew-war-photo"><img src={art[`store:crew-${crew.id}:idle`] || CREW_ART[index % CREW_ART.length]} alt="" /></span>
+                <strong>{crew.name}</strong>
+                <small>{crew.desc}</small>
+                <span className="crew-war-meta">{crew.hours} ساعات · {fmt(crew.price)}</span>
+                <button type="button" className="tos-btn crew-war-btn" disabled={on} onClick={() => { setActive(crew.id); playSfx("click", 0.8); }}>
+                  {on ? "على السطح ⚔" : "جنّده"}
+                </button>
+              </li>
+            );
+          })}
         </ul>
-      </section>
+      </div>
     </div>
   );
 }

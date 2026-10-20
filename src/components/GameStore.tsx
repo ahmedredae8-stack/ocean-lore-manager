@@ -14,7 +14,7 @@ import { useEffect } from "react";
 
 type ShieldInfo = { tier: number; id: string; name_ar: string; blocks: string[]; hits: number; reflect: number };
 export const SHIELDS = shieldData.shields as ShieldInfo[];
-const BLOCK_AR: Record<string, string> = { kinetic: "المقذوفات", fire: "النار", ice: "الجليد", electric: "البرق", ultimate: "الضربة القاضية" };
+const BLOCK_AR: Record<string, string> = { kinetic: "المقذوفات", fire: "النار", ice: "الجليد", electric: "البرق", pierce: "الاختراق", ultimate: "الضربة القاضية" };
 
 function SeaWorlds() {
   const [id, setId] = useState(SEA_WORLDS[0]!.id);

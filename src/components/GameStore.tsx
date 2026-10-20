@@ -12,8 +12,8 @@ import { resolveShipArtwork } from "@/lib/shipArtwork";
 import { SEA_WORLDS, getSeaWorld, loadSeaWorldId, saveSeaWorldId } from "@/lib/seaWorld";
 import { useEffect } from "react";
 
-type ShieldInfo = { tier: number; id: string; name_ar: string; blocks: string[]; hits: number; reflect: number };
-export const SHIELDS = shieldData.shields as ShieldInfo[];
+type ShieldInfo = { tier: 1 | 2 | 3 | 4 | 5; id: string; name_ar: string; blocks: string[]; hits: number; reflect: number };
+export const SHIELDS = shieldData.shields as unknown as ShieldInfo[];
 const BLOCK_AR: Record<string, string> = { kinetic: "المقذوفات", fire: "النار", ice: "الجليد", electric: "البرق", pierce: "الاختراق", ultimate: "الضربة القاضية" };
 
 function SeaWorlds() {

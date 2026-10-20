@@ -11,16 +11,26 @@ import { themes } from "@/lib/themes";
 const poses = {
   ship: [["idle", "عادية"], ["cast", "رمي الشباك"], ["submerged", "تحت الماء"], ["haul", "لم الشباك"]],
   rocket: [["idle", "استعداد"], ["flight", "تحليق"], ["explosion", "انفجار"], ["fire", "نيران"], ["smoke", "دخان"], ["fade", "تلاشي"]],
+  store: [["idle", "صورة المنتج"]],
 } as const;
+type Cat = keyof typeof poses;
 
 type Item = { key: string; name: string; info: string; fallback?: string };
 
 const shipItems: Item[] = fleetCatalog.map(s => ({ key: `ship-${s.id}`, name: s.name, info: `${s.price.toLocaleString("ar-EG")} ${s.currency === "coin" ? "عملة" : "جوهرة"}${s.source === "tribe" ? " · قبيلة" : ""}`, fallback: s.hull }));
 import { saveStarterShips, useStarterShips } from "@/lib/starterShips";
+import { CREWS } from "@/lib/items";
+import { CREW_ART } from "@/lib/art";
+import shieldData from "@/shields/shields.json";
+const storeItems: Item[] = [
+  ...CREWS.map((c, i) => ({ key: `store:crew-${c.id}`, name: `طاقم: ${c.name}`, info: "صورة في المتجر وغرفة الطاقم", fallback: CREW_ART[i % CREW_ART.length] })),
+  ...shieldData.shields.map(s => ({ key: `store:shield-${s.id}`, name: s.name_ar, info: "صورة الدرع في المتجر" })),
+];
+const itemsFor = (c: Cat) => c === "ship" ? shipItems : c === "rocket" ? rocketItems : storeItems;
 const rocketItems: Item[] = WEAPONS.map(w => ({ key: w.id, name: w.name, info: `${w.price.toLocaleString("ar-EG")} ${w.currency === "coin" ? "عملة" : "جوهرة"}`, fallback: w.icon }));
 
 export function ArtworkStudio() {
-  const [category, setCategory] = useState<"ship" | "rocket">("ship");
+  const [category, setCategory] = useState<Cat>("ship");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string>(shipItems[0]?.key ?? "ship-1");
   const [records, setRecords] = useState<ArtworkPose[]>([]);
@@ -33,7 +43,7 @@ export function ArtworkStudio() {
   const [phase, setPhase] = useState<"day" | "night">("day");
   const [previewPose, setPreviewPose] = useState<string>("idle");
 
-  const items = category === "ship" ? shipItems : rocketItems;
+  const items = itemsFor(category);
   const filtered = useMemo(() => items.filter(i => i.name.includes(query.trim())), [items, query]);
   const item = items.find(i => i.key === selected) ?? items[0];
 
@@ -81,7 +91,7 @@ export function ArtworkStudio() {
     announceArtworkUpdate();
   };
 
-  const switchCat = (c: "ship" | "rocket") => { setCategory(c); setPreviewPose("idle"); setSelected((c === "ship" ? shipItems : rocketItems)[0]?.key ?? ""); setQuery(""); };
+  const switchCat = (c: Cat) => { setCategory(c); setPreviewPose("idle"); setSelected(itemsFor(c)[0]?.key ?? ""); setQuery(""); };
 
   if (!item) return <p role="status">لا توجد عناصر متاحة.</p>;
 
@@ -90,6 +100,7 @@ export function ArtworkStudio() {
     <div className="art-mode" role="group" aria-label="النوع">
       <Button variant="ghost" className={category === "ship" ? "active" : ""} onClick={() => switchCat("ship")}><Ship /> سفن ({shipItems.length})</Button>
       <Button variant="ghost" className={category === "rocket" ? "active" : ""} onClick={() => switchCat("rocket")}><Rocket /> صواريخ ({rocketItems.length})</Button>
+      <Button variant="ghost" className={category === "store" ? "active" : ""} onClick={() => switchCat("store")}><ImagePlus /> منتجات المتجر ({storeItems.length})</Button>
     </div>
     <label className="art-label"><span style={{ display: "flex", gap: 6, alignItems: "center" }}><Search size={16} /> بحث</span><input value={query} onChange={e => setQuery(e.target.value)} placeholder="ابحث بالاسم" /></label>
     <div className="art-library" style={{ maxHeight: 260, overflowY: "auto" }}>

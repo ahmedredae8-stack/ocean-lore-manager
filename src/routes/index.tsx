@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
 
-import { useSeaBackground } from "@/lib/artwork";
 import { IntroLoader } from "@/components/IntroLoader";
 import { GameStore } from "@/components/GameStore";
 import { AlertsWindow, EnemiesWindow, InventoryWindow, RankingsWindow } from "@/components/DockWindows";
@@ -31,7 +30,7 @@ import {
   currentPhase,
   defaultTheme,
   getAmbient,
-  getScene,
+
   getTheme,
   hotspots,
   loadThemeId,
@@ -77,9 +76,6 @@ function Index() {
   const [phase, setPhase] = useState(currentPhase());
 
   const theme = getTheme(themeId);
-  const bundledScene = getScene(theme, phase);
-  const seaBg = useSeaBackground();
-  const scene = seaBg ? { video: seaBg.video ? seaBg.url : "", poster: seaBg.video ? bundledScene.poster : seaBg.url } : bundledScene;
   const ambient = getAmbient(theme, phase);
 
   useEffect(() => setThemeId(loadThemeId()), []);
@@ -156,7 +152,6 @@ function Index() {
       {/* Living scene: the WebGL sea engine, so boats sit inside the water */}
       <div className="scene-stage">
         <SeaScene theme={seaWorld} ships={[]} params={seaParams} className="scene-video scene-sea" style={{ aspectRatio: "auto", width: "100%", height: "100%" }} />
-        {void scene}
 
         {hotspots.map((h) => (
           <button
